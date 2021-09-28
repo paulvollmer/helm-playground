@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.js": "/static/js/main.8bfb0033.chunk.js",
-    "main.js.map": "/static/js/main.8bfb0033.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.50798035.js",
-    "runtime-main.js.map": "/static/js/runtime-main.50798035.js.map",
-    "static/js/2.e5331134.chunk.js": "/static/js/2.e5331134.chunk.js",
-    "static/js/2.e5331134.chunk.js.map": "/static/js/2.e5331134.chunk.js.map",
-    "static/js/3.76dcfdab.chunk.js": "/static/js/3.76dcfdab.chunk.js",
-    "static/js/3.76dcfdab.chunk.js.map": "/static/js/3.76dcfdab.chunk.js.map",
-    "index.html": "/index.html",
-    "static/js/2.e5331134.chunk.js.LICENSE.txt": "/static/js/2.e5331134.chunk.js.LICENSE.txt"
+    "main.js": "/helm-playground/static/js/main.8bfb0033.chunk.js",
+    "main.js.map": "/helm-playground/static/js/main.8bfb0033.chunk.js.map",
+    "runtime-main.js": "/helm-playground/static/js/runtime-main.4d956c58.js",
+    "runtime-main.js.map": "/helm-playground/static/js/runtime-main.4d956c58.js.map",
+    "static/js/2.e5331134.chunk.js": "/helm-playground/static/js/2.e5331134.chunk.js",
+    "static/js/2.e5331134.chunk.js.map": "/helm-playground/static/js/2.e5331134.chunk.js.map",
+    "static/js/3.76dcfdab.chunk.js": "/helm-playground/static/js/3.76dcfdab.chunk.js",
+    "static/js/3.76dcfdab.chunk.js.map": "/helm-playground/static/js/3.76dcfdab.chunk.js.map",
+    "index.html": "/helm-playground/index.html",
+    "static/js/2.e5331134.chunk.js.LICENSE.txt": "/helm-playground/static/js/2.e5331134.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.50798035.js",
+    "static/js/runtime-main.4d956c58.js",
     "static/js/2.e5331134.chunk.js",
     "static/js/main.8bfb0033.chunk.js"
   ]
