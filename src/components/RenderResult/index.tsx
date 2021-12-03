@@ -24,7 +24,7 @@ const RenderResult = (props: RenderResultProps) => {
                         theme="github"
                         name="editor"
                         width="100%"
-                        height="80vh"
+                        height="calc(100vh - 100px)"
                         value={props.data.result}
                         editorProps={{$blockScrolling: true}}
                     />

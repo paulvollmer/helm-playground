@@ -370,7 +370,7 @@ const App = (props: AppProps) => {
                                     name="editor"
                                     value={editor}
                                     width="100%"
-                                    height="80vh"
+                                    height="calc(100vh - 100px)"
                                     editorProps={{
                                         $blockScrolling: true
                                     }}
