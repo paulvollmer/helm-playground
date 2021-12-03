@@ -327,7 +327,7 @@ const App = (props: AppProps) => {
                     <Container maxWidth="xl" disableGutters={true}>
                         <Grid container spacing={0}>
 
-                            <Grid item lg={2}>
+                            <Grid item xs={2}>
                                 <FileViewer
                                     className={classes.root}
                                     onNodeSelect={handleSelect}
@@ -337,7 +337,7 @@ const App = (props: AppProps) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={5}>
+                            <Grid item xs={5}>
                                 <Typography variant="subtitle1">
                                     <input
                                         value={fileRename === "" ? selected: fileRename}
@@ -382,7 +382,7 @@ const App = (props: AppProps) => {
                                 />
                             </Grid>
 
-                            <Grid item lg={5}>
+                            <Grid item xs={5}>
                                 <RenderResult data={renderResult} />
                             </Grid>
 
