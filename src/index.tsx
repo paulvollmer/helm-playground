@@ -4,10 +4,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 // load the golang wasm artifact and then render the react application
-fetch('main.wasm').then(response => response.arrayBuffer()).then(function (bin) {
+fetch('main.wasm')
+.then(response => response.arrayBuffer())
+.then(function (bin) {
     // @ts-ignore
     const go = new Go();
-    WebAssembly.instantiate(bin, go.importObject).then((result) => {
+    WebAssembly.instantiate(bin, go.importObject)
+    .then((result) => {
         go.run(result.instance);
         // @ts-ignore
         window.helmRender = helmRender
@@ -20,7 +23,13 @@ fetch('main.wasm').then(response => response.arrayBuffer()).then(function (bin) 
             </React.StrictMode>,
             document.getElementById('root')
         );
+    })
+    .catch(err => {
+        console.log("webassembly instantiate error", err)
     });
+})
+.catch((err) => {
+    console.log("fetch wasm error", err)
 });
 
 // If you want to start measuring performance in your app, pass a function
