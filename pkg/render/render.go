@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"syscall/js"
@@ -195,12 +196,14 @@ func helmRender(this js.Value, p []js.Value) interface{} {
 	d, err := engine.Render(chrt, values)
 	if err != nil {
 		fmt.Println("Helm render error:", err)
+
+		file, line, message := parseRenderError(err)
 		return map[string]interface{}{
 			"error": map[string]interface{}{
 				"kind":    errorKindRender,
-				"file":    "",
-				"line":    "",
-				"message": err.Error(),
+				"file":    file,
+				"line":    line,
+				"message": message,
 			},
 		}
 	}
@@ -214,6 +217,27 @@ func helmRender(this js.Value, p []js.Value) interface{} {
 	return map[string]interface{}{
 		"result": result,
 	}
+}
+
+func parseRenderError(renderErr error) (file string, line int, message string) {
+	r := regexp.MustCompile(`parse error at \((.+):(\d+)\): (.+)`)
+	res := r.FindAllStringSubmatch(renderErr.Error(), -1)
+	if len(res) != 1 {
+		return
+	}
+	if len(res[0]) != 4 {
+		return
+	}
+
+	file = res[0][1]
+	var err error
+	line, err = strconv.Atoi(res[0][2])
+	if err != nil {
+		line = 0
+	}
+	message = res[0][3]
+
+	return
 }
 
 func helmDefaultCapabilities(this js.Value, p []js.Value) interface{} {
