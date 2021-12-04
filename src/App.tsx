@@ -169,7 +169,7 @@ const App = (props: AppProps) => {
     const [editor, setEditor] = useState(chartContent)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [customAnnotations, setCustomAnnotations] = useState({})
-    const [aceEditor, setAceEditor] = useState<Ace.Editor>();
+    const [aceEditor] = useState<Ace.Editor>();
     const [aceEditorError, setAceEditorError] = useState({ row: 0, text: "" });
     const [fileRename, setfileRename] = useState("")
 
@@ -366,7 +366,7 @@ const App = (props: AppProps) => {
                                     />
                                 </Typography>
 
-                                <TheEditor value={editor} onChange={handleEditor} ann={[customAnnotations]} />
+                                <Editor value={editor} onChange={handleEditor} annotations={[customAnnotations]} />
                             </Grid>
 
                             <Grid item xs={5}>
@@ -384,23 +384,29 @@ const App = (props: AppProps) => {
 
 export default App;
 
+type EditorProps = {
+    annotations: any;
+    value: string;
+    onChange: any;
+}
+
 // @ts-ignore
-const TheEditor = ({ ann, value, onChange }) => {
+const Editor = (props: EditorProps) => {
     const [annotations, setAnnotations] = useState([]);
     const [editor, setEditor] = useState();
 
-    const nextAnnotations = [
-        ...annotations.filter(({ custom }) => !custom),  // annotations by worker
-        // @ts-ignore
-        ...ann.map((annotation) => ({ ...annotation, custom: true })) // flag for exclusion
-    ];
-
     useEffect(() => {
+        const nextAnnotations = [
+            ...annotations.filter(({ custom }) => !custom),  // annotations by worker
+            // @ts-ignore
+            ...props.annotations.map((annotation) => ({ ...annotation, custom: true })) // flag for exclusion
+        ];
+
         if (editor) {
             // @ts-ignore
             editor.getSession().setAnnotations(nextAnnotations);
         }
-    }, [editor, JSON.stringify(nextAnnotations)]);
+    }, [editor, annotations, props.annotations]);
 
     return (
         <AceEditor
@@ -409,7 +415,7 @@ const TheEditor = ({ ann, value, onChange }) => {
             theme="github"
             // @ts-ignore
             onLoad={setEditor}
-            onChange={onChange}
+            onChange={props.onChange}
             // @ts-ignore
             onValidate={setAnnotations}
             setOptions={{
@@ -420,7 +426,7 @@ const TheEditor = ({ ann, value, onChange }) => {
             editorProps={{
                 $blockScrolling: true
             }}
-            value={value}
+            value={props.value}
             width="100%"
             height="calc(100vh - 100px)"
         />
