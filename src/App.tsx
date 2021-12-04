@@ -392,21 +392,26 @@ type EditorProps = {
 
 // @ts-ignore
 const Editor = (props: EditorProps) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [annotations, setAnnotations] = useState([]);
     const [editor, setEditor] = useState();
 
     useEffect(() => {
-        const nextAnnotations = [
-            ...annotations.filter(({ custom }) => !custom),  // annotations by worker
-            // @ts-ignore
-            ...props.annotations.map((annotation) => ({ ...annotation, custom: true })) // flag for exclusion
-        ];
+        if (props.annotations.length > 0) {
+            if (props.annotations[0].message !== "") {
+                const nextAnnotations = [
+                    // ...annotations.filter(({ custom }) => !custom),  // annotations by worker
+                    // @ts-ignore
+                    ...props.annotations.map((annotation) => ({ ...annotation, custom: true })) // flag for exclusion
+                ];
 
-        if (editor) {
-            // @ts-ignore
-            editor.getSession().setAnnotations(nextAnnotations);
+                if (editor) {
+                    // @ts-ignore
+                    editor.getSession().setAnnotations(nextAnnotations);
+                }
+            }
         }
-    }, [editor, annotations, props.annotations]);
+    }, [editor, setAnnotations, props.annotations]);
 
     return (
         <AceEditor
