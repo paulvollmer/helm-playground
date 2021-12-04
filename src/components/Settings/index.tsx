@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { SettingsData } from "../../types";
 
@@ -12,6 +13,32 @@ const useStyles = makeStyles((theme) => createStyles({
         marginBottom: theme.spacing(1),
     }
 }));
+
+const kubernetesVersions = [
+    "v1.22.0",
+    "v1.21.0",
+    "v1.20.0",
+    "v1.19.0",
+    "v1.18.0",
+    "v1.17.0",
+    "v1.16.0",
+    "v1.15.0",
+    "v1.14.0",
+    "v1.13.0",
+    "v1.12.0",
+    "v1.11.0",
+    "v1.10.0",
+    "v1.9.0",
+    "v1.8.0",
+    "v1.7.0",
+    "v1.6.0",
+    "v1.5.0",
+    "v1.4.0",
+    "v1.3.0",
+    "v1.2.0",
+    "v1.1.0",
+    "v1.0.0",
+]
 
 type SettingsProps = {
     show: boolean;
@@ -30,8 +57,8 @@ const Settings = (props: SettingsProps) => {
     const [releaseService, setReleaseService] = useState<string>(props.data.release.service)
 
     const [kubeVersion, setKubeVersion] = useState<string>(props.data.kubeVersion.version)
-    const [kubeMajor, setKubeMajor] = useState<string>(props.data.kubeVersion.major)
-    const [kubeMinor, setKubeMinor] = useState<string>(props.data.kubeVersion.minor)
+    // const [kubeMajor, setKubeMajor] = useState<string>(props.data.kubeVersion.major)
+    // const [kubeMinor, setKubeMinor] = useState<string>(props.data.kubeVersion.minor)
 
     const [helmVersion, setHelmVersion] = useState<string>(props.data.helmVersion.version)
     const [helmGitCommit, setHelmGitCommit] = useState<string>(props.data.helmVersion.gitCommit)
@@ -50,8 +77,8 @@ const Settings = (props: SettingsProps) => {
             },
             kubeVersion: {
                 version: kubeVersion,
-                major: kubeMajor,
-                minor: kubeMinor,
+                major: "", //kubeMajor,
+                minor: "", //kubeMinor,
             },
             helmVersion: {
                 version: helmVersion,
@@ -134,16 +161,32 @@ const Settings = (props: SettingsProps) => {
                     <Typography variant="h5" className={classes.typography}>
                         Kubernetes Version
                     </Typography>
-                    <TextField
-                        className={classes.textfield}
-                        fullWidth
-                        variant="standard"
-                        id="kubernetes-version"
-                        label="Kubernetes Version"
+
+                    <Autocomplete
+                        options={kubernetesVersions}
+                        getOptionLabel={(option) => option}
+                        freeSolo
                         value={kubeVersion}
-                        onChange={(e) => setKubeVersion(e.target.value)}
+                        onChange={(e, v) => {
+                            console.log( v)
+                            if(v !== null) {
+                                setKubeVersion(v)
+                            }
+                        }}
+                        renderInput={(params) => <TextField
+                            {...params}
+                            className={classes.textfield}
+                            fullWidth
+                            variant="standard"
+                            id="kubernetes-version"
+                            label="Kubernetes Version"
+                            onChange={e => { 
+                                console.log(e.target.value)
+                                setKubeVersion(e.target.value)
+                            }}
+                        />}
                     />
-                    <TextField
+                    {/* <TextField
                         className={classes.textfield}
                         fullWidth
                         variant="standard"
@@ -160,7 +203,7 @@ const Settings = (props: SettingsProps) => {
                         label="Kubernetes Minor"
                         value={kubeMinor}
                         onChange={(e) => setKubeMinor(e.target.value)}
-                    />
+                    /> */}
                 </Grid>
 
                 <Grid item md={6}>
