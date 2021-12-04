@@ -168,7 +168,7 @@ const App = (props: AppProps) => {
     const [selected, setSelected] = useState(chartFilename)
     const [editor, setEditor] = useState(chartContent)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [aceAnnotations, setAceAnnotations] = useState<Ace.Annotation[]>([]);
+    const [customAnnotations, setCustomAnnotations] = useState({})
     const [aceEditor, setAceEditor] = useState<Ace.Editor>();
     const [aceEditorError, setAceEditorError] = useState({ row: 0, text: "" });
     const [fileRename, setfileRename] = useState("")
@@ -196,6 +196,7 @@ const App = (props: AppProps) => {
         const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, JSON.stringify(settings))
         setRenderResult(result)
 
+        let annotation = {}
         var tmpError = { row: -1, text: "" }
         if (result.error) {
             if (result.error.kind !== "") {
@@ -211,13 +212,21 @@ const App = (props: AppProps) => {
                                 break
                         }
                         break
-                    case "templates":
+
+                    case "render":
+                        annotation = {
+                            row: result.error.line - 1,
+                            column: 0,
+                            text: result.error.message,
+                            type: "error"
+                        }
+                        break
                 }
             }
         }
+        setCustomAnnotations(annotation)
         setAceEditorError(tmpError)
     }, [editor, sources, valuesSource, chartSource, settings, selected])
-
 
     useEffect(() => {
         if (aceEditor) {
@@ -340,15 +349,12 @@ const App = (props: AppProps) => {
                             <Grid item xs={5}>
                                 <Typography variant="subtitle1">
                                     <input
-                                        value={fileRename === "" ? selected: fileRename}
+                                        value={fileRename === "" ? selected : fileRename}
                                         style={{ border: "none", width: "100%" }}
                                         onChange={e => {
-                                            console.log("edit name", e.target.value)
                                             setfileRename(e.target.value)
                                         }}
                                         onBlur={e => {
-                                            console.log("blur name", e.target.value)
-                                            
                                             let tmp = sources
                                             const tmpContent = sources[selected]
                                             delete tmp[selected]
@@ -360,26 +366,7 @@ const App = (props: AppProps) => {
                                     />
                                 </Typography>
 
-                                <AceEditor
-                                    mode="yaml"
-                                    theme="github"
-                                    onLoad={setAceEditor}
-                                    // @ts-ignore
-                                    onValidate={setAceAnnotations}
-                                    onChange={handleEditor}
-                                    name="editor"
-                                    value={editor}
-                                    width="100%"
-                                    height="calc(100vh - 100px)"
-                                    editorProps={{
-                                        $blockScrolling: true
-                                    }}
-                                    setOptions={{
-                                        useWorker: true,
-                                        enableBasicAutocompletion: true,
-                                        enableLiveAutocompletion: true,
-                                    }}
-                                />
+                                <TheEditor value={editor} onChange={handleEditor} ann={[customAnnotations]} />
                             </Grid>
 
                             <Grid item xs={5}>
@@ -396,3 +383,47 @@ const App = (props: AppProps) => {
 }
 
 export default App;
+
+// @ts-ignore
+const TheEditor = ({ ann, value, onChange }) => {
+    const [annotations, setAnnotations] = useState([]);
+    const [editor, setEditor] = useState();
+
+    const nextAnnotations = [
+        ...annotations.filter(({ custom }) => !custom),  // annotations by worker
+        // @ts-ignore
+        ...ann.map((annotation) => ({ ...annotation, custom: true })) // flag for exclusion
+    ];
+
+    useEffect(() => {
+        if (editor) {
+            // @ts-ignore
+            editor.getSession().setAnnotations(nextAnnotations);
+        }
+    }, [editor, JSON.stringify(nextAnnotations)]);
+
+    return (
+        <AceEditor
+            name="editor"
+            mode="yaml"
+            theme="github"
+            // @ts-ignore
+            onLoad={setEditor}
+            onChange={onChange}
+            // @ts-ignore
+            onValidate={setAnnotations}
+            setOptions={{
+                useWorker: true,
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
+            }}
+            editorProps={{
+                $blockScrolling: true
+            }}
+            value={value}
+            width="100%"
+            height="calc(100vh - 100px)"
+        />
+    )
+
+}

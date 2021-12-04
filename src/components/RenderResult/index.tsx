@@ -46,10 +46,12 @@ const RenderError = (props: RenderErrorProps) => {
                 Error Kind: {props.error.kind}
             </Typography>
             <Typography variant="h6">
-                File: {props.error.file} {props.error.line ? (`Line: ${props.error.line}`): ""}
+                {props.error.message}
             </Typography>
             <Typography variant="body1">
-                {props.error.message}
+                File: {props.error.file} 
+                <br/>
+                {props.error.line ? (`Line: ${props.error.line}`): ""}
             </Typography>
         </div>
     )
