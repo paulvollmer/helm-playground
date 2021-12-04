@@ -209,8 +209,7 @@ func helmRender(this js.Value, p []js.Value) interface{} {
 	}
 
 	result := ""
-	for k, v := range d {
-		result += "# " + k + "\n"
+	for _, v := range d {
 		result += v
 	}
 
