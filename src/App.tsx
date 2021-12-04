@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { Box, Container, createTheme, CssBaseline, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Box, Container, createTheme, CssBaseline, Grid, makeStyles, Typography, CircularProgress } from '@material-ui/core';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-github";
@@ -43,10 +43,6 @@ initialTemplateSources[ingressFilename] = ingressContent
 initialTemplateSources[notesFilename] = notesContent
 initialTemplateSources[serviceFilename] = serviceContent
 initialTemplateSources[serviceaccountFilename] = serviceaccountContent
-
-type AppProps = {
-    defaultCapabilities: SettingsData;
-}
 
 const autocompleteChartYaml = [
     {
@@ -156,9 +152,33 @@ const autocompleteChartYaml = [
     },
 ]
 
+const emptySettings = {
+    release: {
+        name: "",
+        namespace: "",
+        revision: "",
+        isUpgrade: "",
+        isInstall: "",
+        service: "",
+    },
+    kubeVersion: {
+        version: "",
+        major: "",
+        minor: "",
+    },
+    helmVersion: {
+        version: "",
+        gitCommit: "",
+        gitTreeState: "",
+        goVersion: "",
+    }
+}
 
-const App = (props: AppProps) => {
+const App = () => {
     const classes = useStyles();
+
+    const [wasmLoaded, setWasmLoaded] = useState<boolean>(false)
+    const [wasmError, setWasmError] = useState<string>("")
 
     const [chartSource, setChartSource] = useState(chartContent)
     const [valuesSource, setValuesSource] = useState(valuesContent)
@@ -176,9 +196,35 @@ const App = (props: AppProps) => {
     const [renderResult, setRenderResult] = useState<helmRenderReturn>({ result: "" })
 
     const [showSettings, setShowSettings] = useState(false)
-    const [settings, setSettings] = useState<SettingsData>(props.defaultCapabilities)
+    const [settings, setSettings] = useState<SettingsData>(emptySettings)
 
     useEffect(() => {
+        // load the golang wasm artifact and then render the react application
+        fetch('main.wasm')
+            .then(response => response.arrayBuffer())
+            .then(function (bin) {
+                // @ts-ignore
+                const go = new Go();
+                WebAssembly.instantiate(bin, go.importObject)
+                    .then((result) => {
+                        go.run(result.instance);
+                        // @ts-ignore
+                        window.helmRender = helmRender
+                        // @ts-ignore
+                        window.helmDefaultCapabilities = helmDefaultCapabilities
+                        setWasmLoaded(true)
+                        setSettings(window.helmDefaultCapabilities())
+                    })
+                    .catch(err => {
+                        console.error("webassembly instantiate error", err)
+                        setWasmError("could not instantiate helm renderer")
+                    });
+            })
+            .catch((err) => {
+                setWasmError("could not load helm renderer")
+                console.error("fetch wasm error", err)
+            });
+
         addCompleter({
             getCompletions: function (editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { name: string; value: string; caption: string; meta: string; score: number; }[]) => void) {
                 callback(null, [
@@ -189,47 +235,49 @@ const App = (props: AppProps) => {
     })
 
     useEffect(() => {
-        const filesToRender: Sources = {}
-        filesToRender["_helpers.tpl"] = sources["_helpers.tpl"]
-        filesToRender[selected] = sources[selected]
+        if (wasmLoaded) {
+            const filesToRender: Sources = {}
+            filesToRender["_helpers.tpl"] = sources["_helpers.tpl"]
+            filesToRender[selected] = sources[selected]
 
-        const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, JSON.stringify(settings))
-        setRenderResult(result)
+            const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, JSON.stringify(settings))
+            setRenderResult(result)
 
-        let annotation = {}
-        var tmpError = { row: -1, text: "" }
-        if (result.error) {
-            if (result.error.kind !== "") {
-                switch (result?.error.kind) {
-                    case "input":
-                        switch (result.error.file) {
-                            case valuesFilename:
-                                tmpError = { row: result.error.line - 1, text: result.error.message }
-                                break
+            let annotation = {}
+            var tmpError = { row: -1, text: "" }
+            if (result.error) {
+                if (result.error.kind !== "") {
+                    switch (result?.error.kind) {
+                        case "input":
+                            switch (result.error.file) {
+                                case valuesFilename:
+                                    tmpError = { row: result.error.line - 1, text: result.error.message }
+                                    break
 
-                            case chartFilename:
-                                tmpError = { row: result.error.line - 1, text: result.error.message }
-                                break
-                        }
-                        break
+                                case chartFilename:
+                                    tmpError = { row: result.error.line - 1, text: result.error.message }
+                                    break
+                            }
+                            break
 
-                    case "render":
-                        annotation = {
-                            row: result.error.line - 1,
-                            column: 0,
-                            text: result.error.message,
-                            type: "error"
-                        }
-                        break
+                        case "render":
+                            annotation = {
+                                row: result.error.line - 1,
+                                column: 0,
+                                text: result.error.message,
+                                type: "error"
+                            }
+                            break
+                    }
                 }
             }
+            setCustomAnnotations(annotation)
+            setAceEditorError(tmpError)
         }
-        setCustomAnnotations(annotation)
-        setAceEditorError(tmpError)
-    }, [editor, sources, valuesSource, chartSource, settings, selected])
+    }, [wasmLoaded, editor, sources, valuesSource, chartSource, settings, selected])
 
     useEffect(() => {
-        if (aceEditor) {
+        if (wasmLoaded && aceEditor) {
             // @ts-ignore
             let customAnnotations = []
             if (aceEditorError.row !== -1) {
@@ -240,7 +288,7 @@ const App = (props: AppProps) => {
             // @ts-ignore
             aceEditor?.getSession().setAnnotations(customAnnotations);
         }
-    }, [aceEditor, aceEditorError]);
+    }, [wasmLoaded, aceEditor, aceEditorError]);
 
     const handleSelect = (event: React.ChangeEvent<{}>, nodeIds: string) => {
         setSelected(nodeIds)
@@ -319,65 +367,83 @@ const App = (props: AppProps) => {
                 }}
                 handleSettings={handleSettings}
             />
-
             <Box sx={{ pt: 10, pb: 8, }}>
-                {showSettings ? (
-                    <Container maxWidth="md" disableGutters={true}>
-                        <Settings
-                            show={true}
-                            data={settings}
-                            handleSave={(data) => {
-                                setShowSettings(false)
-                                setSettings(data)
-                            }}
-                        />
-                    </Container>
+                {wasmLoaded ? (
+                    <>
+                        {wasmError !== "" ? (
+                            <Container maxWidth="md" disableGutters={true} style={{ textAlign: "center" }}>
+                                <p>{wasmError}</p>
+                            </Container>
+                        ) : (
+                            <>
+                                {showSettings ? (
+                                    <Container maxWidth="md" disableGutters={true}>
+                                        <Settings
+                                            show={true}
+                                            data={settings}
+                                            handleSave={(data) => {
+                                                setShowSettings(false)
+                                                setSettings(data)
+                                            }}
+                                        />
+                                    </Container>
+                                ) : (
+                                    <Container maxWidth="xl" disableGutters={true}>
+                                        <Grid container spacing={0}>
+
+                                            <Grid item xs={2}>
+                                                <FileViewer
+                                                    className={classes.root}
+                                                    onNodeSelect={handleSelect}
+                                                    sources={sources}
+                                                    onDelete={handleDelete}
+                                                    selected={selected}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={5}>
+                                                <Typography variant="subtitle1">
+                                                    <input
+                                                        value={fileRename === "" ? selected : fileRename}
+                                                        style={{ border: "none", width: "100%" }}
+                                                        onChange={e => {
+                                                            setfileRename(e.target.value)
+                                                        }}
+                                                        onBlur={e => {
+                                                            let tmp = sources
+                                                            const tmpContent = sources[selected]
+                                                            delete tmp[selected]
+                                                            tmp[e.target.value] = tmpContent
+                                                            setSources(tmp)
+                                                            setSelected(e.target.value)
+                                                            setfileRename("")
+                                                        }}
+                                                    />
+                                                </Typography>
+
+                                                <Editor value={editor} onChange={handleEditor} annotations={[customAnnotations]} />
+                                            </Grid>
+
+                                            <Grid item xs={5}>
+                                                <RenderResult data={renderResult} />
+                                            </Grid>
+
+                                        </Grid>
+                                    </Container>
+                                )}
+                            </>
+                        )}
+                    </>
                 ) : (
-                    <Container maxWidth="xl" disableGutters={true}>
-                        <Grid container spacing={0}>
+                    <Container maxWidth="md" disableGutters={true} style={{ textAlign: "center" }}>
+                        <CircularProgress />
+                        <p>Loading Helm Renderer</p>
 
-                            <Grid item xs={2}>
-                                <FileViewer
-                                    className={classes.root}
-                                    onNodeSelect={handleSelect}
-                                    sources={sources}
-                                    onDelete={handleDelete}
-                                    selected={selected}
-                                />
-                            </Grid>
-
-                            <Grid item xs={5}>
-                                <Typography variant="subtitle1">
-                                    <input
-                                        value={fileRename === "" ? selected : fileRename}
-                                        style={{ border: "none", width: "100%" }}
-                                        onChange={e => {
-                                            setfileRename(e.target.value)
-                                        }}
-                                        onBlur={e => {
-                                            let tmp = sources
-                                            const tmpContent = sources[selected]
-                                            delete tmp[selected]
-                                            tmp[e.target.value] = tmpContent
-                                            setSources(tmp)
-                                            setSelected(e.target.value)
-                                            setfileRename("")
-                                        }}
-                                    />
-                                </Typography>
-
-                                <Editor value={editor} onChange={handleEditor} annotations={[customAnnotations]} />
-                            </Grid>
-
-                            <Grid item xs={5}>
-                                <RenderResult data={renderResult} />
-                            </Grid>
-
-                        </Grid>
                     </Container>
                 )}
-            </Box>
 
+
+            </Box>
         </ThemeProvider>
     );
 }

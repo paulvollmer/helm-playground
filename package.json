@@ -26,7 +26,7 @@
   "scripts": {
     "start": "PUBLIC_URL=/ react-scripts start",
     "build": "react-scripts build",
-    "prebuild": "cat $(go env GOROOT)/misc/wasm/wasm_exec.js > public/wasm_exec.js",
+    "build:wasm-exec": "cat $(go env GOROOT)/misc/wasm/wasm_exec.js > public/wasm_exec.js",
     "build:wasm": "cd pkg/render && GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ../../public/main.wasm",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
