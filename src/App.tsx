@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { Box, Container, createTheme, CssBaseline, Grid, makeStyles, Typography, CircularProgress } from '@material-ui/core';
+import { Box, Container, createTheme, CssBaseline, Grid, makeStyles, Typography, LinearProgress } from '@material-ui/core';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-github";
 import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools';
+import axios from 'axios'
 
 import Navigation from "./components/Navigation";
 import RenderResult from "./components/RenderResult";
@@ -23,6 +24,8 @@ import handleImport from "./components/import";
 import Settings from "./components/Settings";
 import { helmRenderReturn, SettingsData, Sources } from "./types";
 import { Ace } from "ace-builds";
+
+const totalWasmSize = 56719824 // TODO: set the value at build time
 
 const theme = createTheme();
 
@@ -178,6 +181,7 @@ const App = () => {
     const classes = useStyles();
 
     const [wasmLoaded, setWasmLoaded] = useState<boolean>(false)
+    const [wasmLoadProgress, setWasmLoadProgress] = useState(0)
     const [wasmError, setWasmError] = useState<string>("")
 
     const [chartSource, setChartSource] = useState(chartContent)
@@ -199,39 +203,78 @@ const App = () => {
     const [settings, setSettings] = useState<SettingsData>(emptySettings)
 
     useEffect(() => {
-        // load the golang wasm artifact and then render the react application
-        fetch('main.wasm')
-            .then(response => response.arrayBuffer())
-            .then(function (bin) {
-                // @ts-ignore
-                const go = new Go();
-                WebAssembly.instantiate(bin, go.importObject)
-                    .then((result) => {
-                        go.run(result.instance);
-                        // @ts-ignore
-                        window.helmRender = helmRender
-                        // @ts-ignore
-                        window.helmDefaultCapabilities = helmDefaultCapabilities
-                        setWasmLoaded(true)
-                        setSettings(window.helmDefaultCapabilities())
-                    })
-                    .catch(err => {
-                        console.error("webassembly instantiate error", err)
-                        setWasmError("could not instantiate helm renderer")
-                    });
-            })
-            .catch((err) => {
-                setWasmError("could not load helm renderer")
-                console.error("fetch wasm error", err)
-            });
+        axios.request({
+            method: "get",
+            url: "main.wasm",
+            responseType: 'arraybuffer',
+            onDownloadProgress: (p) => {
+                setWasmLoadProgress((p.loaded / totalWasmSize )  * 100)
+            }
+        }).then(res => {
+            setWasmLoadProgress(100)
+            return new Blob([res.data]).arrayBuffer()
+        }).then(bin => {
+            // @ts-ignore
+            const go = new Go();
+            WebAssembly.instantiate(bin, go.importObject)
+                .then((result) => {
+                    // @ts-ignore
+                    go.run(result.instance);
+                    // @ts-ignore
+                    window.helmRender = helmRender
+                    // @ts-ignore
+                    window.helmDefaultCapabilities = helmDefaultCapabilities
+                    setWasmLoaded(true)
+                    setSettings(window.helmDefaultCapabilities())
+                })
+                .catch(err => {
+                    console.error("webassembly instantiate error", err)
+                    setWasmError("could not instantiate helm renderer")
+                });
 
-        addCompleter({
-            getCompletions: function (editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { name: string; value: string; caption: string; meta: string; score: number; }[]) => void) {
-                callback(null, [
-                    ...autocompleteChartYaml,
-                ]);
-            },
-        });
+            addCompleter({
+                getCompletions: function (editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { name: string; value: string; caption: string; meta: string; score: number; }[]) => void) {
+                    callback(null, [
+                        ...autocompleteChartYaml,
+                    ]);
+                },
+            });
+        })
+
+
+        // load the golang wasm artifact and then render the react application
+        // fetch('main.wasm')
+        //     .then(response => response.arrayBuffer())
+        //     .then(function (bin) {
+        //         // @ts-ignore
+        //         const go = new Go();
+        //         WebAssembly.instantiate(bin, go.importObject)
+        //             .then((result) => {
+        //                 go.run(result.instance);
+        //                 // @ts-ignore
+        //                 window.helmRender = helmRender
+        //                 // @ts-ignore
+        //                 window.helmDefaultCapabilities = helmDefaultCapabilities
+        //                 setWasmLoaded(true)
+        //                 setSettings(window.helmDefaultCapabilities())
+        //             })
+        //             .catch(err => {
+        //                 console.error("webassembly instantiate error", err)
+        //                 setWasmError("could not instantiate helm renderer")
+        //             });
+        //     })
+        //     .catch((err) => {
+        //         setWasmError("could not load helm renderer")
+        //         console.error("fetch wasm error", err)
+        //     });
+
+        // addCompleter({
+        //     getCompletions: function (editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { name: string; value: string; caption: string; meta: string; score: number; }[]) => void) {
+        //         callback(null, [
+        //             ...autocompleteChartYaml,
+        //         ]);
+        //     },
+        // });
     }, [])
 
     useEffect(() => {
@@ -436,7 +479,8 @@ const App = () => {
                     </>
                 ) : (
                     <Container maxWidth="md" disableGutters={true} style={{ textAlign: "center" }}>
-                        <CircularProgress />
+                        {/* <CircularProgress /> */}
+                        <LinearProgress variant="determinate" value={wasmLoadProgress}/>
                         <p>Loading Helm Renderer</p>
 
                     </Container>
