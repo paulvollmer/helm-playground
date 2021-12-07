@@ -232,7 +232,7 @@ const App = () => {
                 ]);
             },
         });
-    })
+    }, [])
 
     useEffect(() => {
         if (wasmLoaded) {
