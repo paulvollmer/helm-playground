@@ -1,4 +1,4 @@
-export const valuesFilename = "values.yaml"
+export const valuesFilename = 'values.yaml'
 
 export const valuesContent = `# Default values for foo.
 # This is a YAML-formatted file.

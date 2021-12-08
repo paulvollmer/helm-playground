@@ -1,4 +1,4 @@
-export const notesFilename = "NOTES.txt"
+export const notesFilename = 'NOTES.txt'
 
 export const notesContent = `1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}

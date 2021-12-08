@@ -1,5 +1,5 @@
 const handleImport = () => {
-    console.log("import")
+  console.log('import')
 }
 
 export default handleImport

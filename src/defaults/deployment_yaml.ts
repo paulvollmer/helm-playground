@@ -1,4 +1,4 @@
-export const deploymentFilename = "deployment.yaml"
+export const deploymentFilename = 'deployment.yaml'
 
 export const deploymentContent = `apiVersion: apps/v1
 kind: Deployment

@@ -1,4 +1,4 @@
-export const helpersFilename = "_helpers.tpl"
+export const helpersFilename = '_helpers.tpl'
 
 export const helpersContent = `{{/*
 Expand the name of the chart.
