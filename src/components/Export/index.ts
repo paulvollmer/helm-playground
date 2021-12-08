@@ -5,7 +5,7 @@ import { chartFilename } from '../../defaults/chart_yaml'
 import { valuesFilename } from '../../defaults/values_yaml'
 import { helmignoreFilename } from '../../defaults/helmignore'
 
-type Files = {
+export type Files = {
   chart: string
   values: string
   helmignore: string
@@ -13,8 +13,6 @@ type Files = {
 }
 
 const handleExport = (name: string, files: Files) => {
-  console.log('export', name, files)
-
   const zip = new JSZip()
 
   zip.file(chartFilename, files.chart)

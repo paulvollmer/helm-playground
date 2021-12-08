@@ -42,13 +42,13 @@ const kubernetesVersions = [
   'v1.0.0',
 ]
 
-type SettingsProps = {
+export type SettingsProps = {
   show: boolean
   data: SettingsData
   handleSave: (d: SettingsData) => void
 }
 
-const Settings = (props: SettingsProps) => {
+const Settings = (props: SettingsProps): JSX.Element => {
   const classes = useStyles()
 
   const [releaseName, setReleaseName] = useState<string>(props.data.release.name)
@@ -168,21 +168,19 @@ const Settings = (props: SettingsProps) => {
             freeSolo
             value={kubeVersion}
             onChange={(e, v) => {
-              console.log(v)
               if (v !== null) {
                 setKubeVersion(v)
               }
             }}
             renderInput={(params) => (
               <TextField
-                {...params}
+                {...params} // eslint-disable-line
                 className={classes.textfield}
                 fullWidth
                 variant="standard"
                 id="kubernetes-version"
                 label="Kubernetes Version"
                 onChange={(e) => {
-                  console.log(e.target.value)
                   setKubeVersion(e.target.value)
                 }}
               />

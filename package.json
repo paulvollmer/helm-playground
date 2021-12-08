@@ -29,7 +29,6 @@
     "build:wasm-exec": "cat $(go env GOROOT)/misc/wasm/wasm_exec.js > public/wasm_exec.js",
     "build:wasm": "cd pkg/render && GOOS=js GOARCH=wasm go build  -o ../../public/main-big.wasm",
     "test": "react-scripts test",
-    "format": "prettier --write .",
     "lint": "eslint \"**/*.{ts,tsx,js,jsx}\"",
     "lint:fix": "eslint \"**/*.{ts,tsx,js,jsx}\" --quiet --fix"
   },

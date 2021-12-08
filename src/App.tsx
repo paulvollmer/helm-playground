@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { Box, Container, createTheme, CssBaseline, Grid, makeStyles, Typography, LinearProgress } from '@material-ui/core'
-import AceEditor from 'react-ace'
-import 'ace-builds/src-noconflict/mode-yaml'
-import 'ace-builds/src-noconflict/theme-github'
 import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools'
 import axios from 'axios'
 
@@ -21,15 +18,16 @@ import { serviceaccountContent, serviceaccountFilename } from './defaults/servic
 import { deploymentContent, deploymentFilename } from './defaults/deployment_yaml'
 import { helmignoreContent, helmignoreFilename } from './defaults/helmignore'
 import handleExport from './components/Export'
-import handleImport from './components/import'
+// import handleImport from './components/import'
+import Editor from './components/Editor'
 import Settings from './components/Settings'
-import { helmRenderReturn, SettingsData, Sources } from './types'
+import { HelmRenderReturn, SettingsData, Sources } from './types'
 
 const totalWasmSize = 56719824 // TODO: set the value at build time
 
 const theme = createTheme()
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((t) => ({
   root: {
     flexGrow: 1,
   },
@@ -177,7 +175,7 @@ const emptySettings = {
   },
 }
 
-const App = () => {
+const App = (): JSX.Element => {
   const classes = useStyles()
 
   const [wasmLoaded, setWasmLoaded] = useState<boolean>(false)
@@ -197,7 +195,7 @@ const App = () => {
   const [aceEditorError, setAceEditorError] = useState({ row: 0, text: '' })
   const [fileRename, setfileRename] = useState('')
 
-  const [renderResult, setRenderResult] = useState<helmRenderReturn>({
+  const [renderResult, setRenderResult] = useState<HelmRenderReturn>({
     result: '',
   })
 
@@ -239,7 +237,7 @@ const App = () => {
 
         addCompleter({
           getCompletions(
-            editor: any,
+            editor: any, // eslint-disable-line
             session: any,
             pos: any,
             prefix: any,
@@ -323,6 +321,8 @@ const App = () => {
                     text: result.error.message,
                   }
                   break
+                default:
+                  break
               }
               break
 
@@ -333,6 +333,9 @@ const App = () => {
                 text: result.error.message,
                 type: 'error',
               }
+              break
+
+            default:
               break
           }
         }
@@ -345,7 +348,7 @@ const App = () => {
   useEffect(() => {
     if (wasmLoaded && aceEditor) {
       // @ts-ignore
-      let customAnnotations = []
+      let customAnnotations = [] // eslint-disable-line
       if (aceEditorError.row !== -1) {
         customAnnotations = [
           {
@@ -362,7 +365,7 @@ const App = () => {
     }
   }, [wasmLoaded, aceEditor, aceEditorError])
 
-  const handleSelect = (event: React.ChangeEvent<{}>, nodeIds: string) => {
+  const handleSelect = (event: React.ChangeEvent<{}>, nodeIds: string) => { // eslint-disable-line
     setSelected(nodeIds)
     switch (nodeIds) {
       case chartFilename:
@@ -376,7 +379,7 @@ const App = () => {
         break
 
       case '__ADD__':
-        const tmp = sources
+        const tmp = sources // eslint-disable-line
         tmp['untitled.yaml'] = ''
         setSelected('untitled.yaml')
         setSources(tmp)
@@ -401,7 +404,7 @@ const App = () => {
         setHelmignoreSource(newValue)
         break
       default:
-        const tmp = sources
+        const tmp = sources // eslint-disable-line
         // @ts-ignore
         tmp[selected] = newValue
         setSources(tmp)
@@ -410,7 +413,7 @@ const App = () => {
     // setRenderResult(window.helmRender(JSON.stringify(sources), valuesSource, chartSource, JSON.stringify(settings)))
   }
 
-  const handleDelete = (event: React.ChangeEvent<{}>, src: string) => {
+  const handleDelete = (event: React.ChangeEvent<{}>, src: string) => { // eslint-disable-line
     setSelected(chartFilename)
     setEditor(sources[chartFilename])
     const tmp = sources
@@ -427,7 +430,7 @@ const App = () => {
       <CssBaseline />
       <Navigation
         className={classes.navTitle}
-        handleImport={handleImport}
+        // handleImport={handleImport}
         handleExport={() => {
           const options = {
             chart: chartSource,
@@ -517,60 +520,3 @@ const App = () => {
 }
 
 export default App
-
-type EditorProps = {
-  annotations: any
-  value: string
-  onChange: any
-}
-
-// @ts-ignore
-const Editor = (props: EditorProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [annotations, setAnnotations] = useState([])
-  const [editor, setEditor] = useState()
-
-  useEffect(() => {
-    if (props.annotations.length > 0) {
-      if (props.annotations[0].message !== '') {
-        const nextAnnotations = [
-          // ...annotations.filter(({ custom }) => !custom),  // annotations by worker
-          // @ts-ignore
-          ...props.annotations.map((annotation) => ({
-            ...annotation,
-            custom: true,
-          })), // flag for exclusion
-        ]
-
-        if (editor) {
-          // @ts-ignore
-          editor.getSession().setAnnotations(nextAnnotations)
-        }
-      }
-    }
-  }, [editor, setAnnotations, props.annotations])
-
-  return (
-    <AceEditor
-      name="editor"
-      mode="yaml"
-      theme="github"
-      // @ts-ignore
-      onLoad={setEditor}
-      onChange={props.onChange}
-      // @ts-ignore
-      onValidate={setAnnotations}
-      setOptions={{
-        useWorker: true,
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-      }}
-      editorProps={{
-        $blockScrolling: true,
-      }}
-      value={props.value}
-      width="100%"
-      height="calc(100vh - 100px)"
-    />
-  )
-}

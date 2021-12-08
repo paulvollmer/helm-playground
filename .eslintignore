@@ -1,4 +1,5 @@
 node_modules/*
+build/*
 public/*
 src/react-app-env.d.ts
 src/reportWebVitals.ts

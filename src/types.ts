@@ -1,16 +1,16 @@
 declare global {
   interface Window {
-    helmRender: (templates: string, values: string, chart: string, settings: string) => helmRenderReturn
+    helmRender: (templates: string, values: string, chart: string, settings: string) => HelmRenderReturn
     helmDefaultCapabilities: () => SettingsData
   }
 }
 
-export type helmRenderReturn = {
-  error?: helmRenderReturnError
+export type HelmRenderReturn = {
+  error?: HelmRenderReturnError
   result?: string
 }
 
-export type helmRenderReturnError = {
+export type HelmRenderReturnError = {
   kind: string
   file: string
   line: number
