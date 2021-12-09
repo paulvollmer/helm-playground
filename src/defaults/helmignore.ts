@@ -1,4 +1,4 @@
-export const helmignoreFilename = ".helmignore"
+export const helmignoreFilename = '.helmignore'
 
 export const helmignoreContent = `# Patterns to ignore when building packages.
 # This supports shell glob matching, relative path matching, and

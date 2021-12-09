@@ -1,4 +1,4 @@
-export const serviceaccountFilename = "serviceaccount.yaml"
+export const serviceaccountFilename = 'serviceaccount.yaml'
 
 export const serviceaccountContent = `{{- if .Values.serviceAccount.create -}}
 apiVersion: v1

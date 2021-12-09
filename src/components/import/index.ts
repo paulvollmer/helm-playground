@@ -1,5 +1,3 @@
-const handleImport = () => {
-    console.log("import")
-}
+const handleImport = () => {}
 
 export default handleImport

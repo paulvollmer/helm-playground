@@ -1,4 +1,4 @@
-export const ingressFilename = "ingress.yaml"
+export const ingressFilename = 'ingress.yaml'
 
 export const ingressContent = `{{- if .Values.ingress.enabled -}}
 {{- $fullName := include "sample.fullname" . -}}

@@ -1,0 +1,5 @@
+node_modules
+build
+coverage
+src/react-app-env.d.ts
+src/reportWebVitals.ts

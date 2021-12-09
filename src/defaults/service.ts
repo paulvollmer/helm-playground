@@ -1,4 +1,4 @@
-export const serviceFilename = "service.yaml"
+export const serviceFilename = 'service.yaml'
 
 export const serviceContent = `apiVersion: v1
 kind: Service

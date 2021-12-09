@@ -1,4 +1,4 @@
-export const chartFilename = "Chart.yaml"
+export const chartFilename = 'Chart.yaml'
 
 export const chartContent = `apiVersion: v2
 name: sample
