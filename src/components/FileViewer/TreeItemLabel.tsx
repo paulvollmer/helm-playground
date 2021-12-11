@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu, MenuItem } from '@material-ui/core'
+import { Menu, MenuItem } from '@mui/material'
 
 export type TreeItemLabelProps = {
     onDelete: (event: React.ChangeEvent<{}>, src: string) => void // eslint-disable-line

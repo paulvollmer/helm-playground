@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { ThemeProvider } from '@material-ui/core/styles'
-import { Box, Container, createTheme, CssBaseline, Grid, makeStyles, Typography, LinearProgress } from '@material-ui/core'
+import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles'
+import { Box, Container, createTheme, CssBaseline, Grid, Typography, LinearProgress } from '@mui/material'
+import makeStyles from '@mui/styles/makeStyles'
 import { Ace } from 'ace-builds'
 import axios from 'axios'
 
@@ -21,6 +22,11 @@ import handleExport from './components/Export'
 import Editor from './components/Editor'
 import Settings from './components/Settings'
 import { HelmRenderReturn, SettingsData, Sources } from './types'
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 const totalWasmSize = 56719824 // TODO: set the value at build time
 
@@ -390,9 +396,11 @@ const Playground = (): JSX.Element => {
 }
 
 const App = (): JSX.Element => (
-  <ThemeProvider theme={theme}>
-    <Playground />
-  </ThemeProvider>
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={theme}>
+      <Playground />
+    </ThemeProvider>
+  </StyledEngineProvider>
 )
 
 export default App

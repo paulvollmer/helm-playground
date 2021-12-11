@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { Button, Grid, Paper, TextField, Typography } from '@mui/material'
+import Autocomplete from '@mui/material/Autocomplete'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import { SettingsData } from '../../types'
 
 const useStyles = makeStyles((theme) =>

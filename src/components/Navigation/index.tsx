@@ -1,6 +1,6 @@
 import React from 'react'
-import { AppBar, Button, Toolbar, Typography, IconButton } from '@material-ui/core'
-import GitHubIcon from '@material-ui/icons/GitHub'
+import { AppBar, Button, Toolbar, Typography, IconButton } from '@mui/material'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import Logo from './Logo'
 
 export type NavigationProps = {
@@ -29,7 +29,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
         <Button color="inherit" onClick={props.handleSettings}>
           Settings
         </Button>
-        <IconButton color="inherit" onClick={handleGithub}>
+        <IconButton color="inherit" onClick={handleGithub} size="large">
           <GitHubIcon />
         </IconButton>
       </Toolbar>
