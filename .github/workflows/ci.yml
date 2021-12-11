@@ -68,6 +68,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: react-build
+          path: build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
