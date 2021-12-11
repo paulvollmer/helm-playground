@@ -66,7 +66,7 @@ const emptySettings = {
   },
 }
 
-const App = (): JSX.Element => {
+const Playground = (): JSX.Element => {
   const classes = useStyles()
 
   const [wasmLoaded, setWasmLoaded] = useState<boolean>(false)
@@ -296,7 +296,7 @@ const App = (): JSX.Element => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <CssBaseline />
       <Navigation
         className={classes.navTitle}
@@ -385,8 +385,14 @@ const App = (): JSX.Element => {
           </Container>
         )}
       </Box>
-    </ThemeProvider>
+    </>
   )
 }
+
+const App = (): JSX.Element => (
+  <ThemeProvider theme={theme}>
+    <Playground />
+  </ThemeProvider>
+)
 
 export default App
