@@ -1,7 +1,6 @@
 declare global {
   interface Window {
     helmRender: (templates: string, values: string, chart: string, settings: string) => HelmRenderReturn
-    helmDefaultCapabilities: () => SettingsData
   }
 }
 

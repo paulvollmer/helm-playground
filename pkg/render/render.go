@@ -238,27 +238,3 @@ func parseRenderError(renderErr error) (file string, line int, message string) {
 
 	return
 }
-
-func helmDefaultCapabilities(this js.Value, p []js.Value) interface{} {
-	return map[string]interface{}{
-		"release": map[string]interface{}{
-			"name":      "sample",
-			"namespace": "default",
-			"isUpgrade": "false",
-			"isInstall": "false",
-			"revision":  "1",
-			"service":   "Helm",
-		},
-		"kubeVersion": map[string]interface{}{
-			"version": chartutil.DefaultCapabilities.KubeVersion.Version,
-			"major":   chartutil.DefaultCapabilities.KubeVersion.Major,
-			"minor":   chartutil.DefaultCapabilities.KubeVersion.Minor,
-		},
-		"helmVersion": map[string]interface{}{
-			"version":      chartutil.DefaultCapabilities.HelmVersion.Version,
-			"gitCommit":    chartutil.DefaultCapabilities.HelmVersion.GitCommit,
-			"gitTreeState": chartutil.DefaultCapabilities.HelmVersion.GitTreeState,
-			"goVersion":    chartutil.DefaultCapabilities.HelmVersion.GoVersion,
-		},
-	}
-}

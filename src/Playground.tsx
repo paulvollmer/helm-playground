@@ -125,8 +125,6 @@ const Playground = (): JSX.Element => {
             go.run(result.instance)
             // @ts-ignore
             window.helmRender = helmRender
-            // @ts-ignore
-            window.helmDefaultCapabilities = helmDefaultCapabilities
             setWasmLoaded(true)
           })
           .catch((err) => {
