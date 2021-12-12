@@ -38,8 +38,6 @@ export type SettingsRelease = {
 
 export type SettingsKubeVersion = {
   version: string
-  major: string
-  minor: string
 }
 
 export type SettingsHelmVersion = {

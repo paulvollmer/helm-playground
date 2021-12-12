@@ -6,8 +6,6 @@ import Logo from './Logo'
 export type NavigationProps = {
   // handleImport: () => void
   handleExport: () => void
-  handleSettings: () => void
-  className: string
 }
 
 const Navigation = (props: NavigationProps): JSX.Element => {
@@ -16,18 +14,15 @@ const Navigation = (props: NavigationProps): JSX.Element => {
   }
 
   return (
-    <AppBar position="fixed" style={{ background: '#0f1689' }}>
+    <AppBar position="fixed" sx={{ background: '#0f1689', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
         <Logo />
-        <Typography variant="h6" color="inherit" className={props.className}>
+        <Typography variant="h6" color="inherit" sx={{ flexGrow: 1, marginLeft: '20px' }}>
           Playground
         </Typography>
         {/* <Button color="inherit" onClick={props.handleImport}>Import</Button> */}
         <Button color="inherit" onClick={props.handleExport}>
           Export
-        </Button>
-        <Button color="inherit" onClick={props.handleSettings}>
-          Settings
         </Button>
         <IconButton color="inherit" onClick={handleGithub} size="large">
           <GitHubIcon />

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Grid, Typography, LinearProgress } from '@mui/material'
+import { Box, Container, Drawer, Toolbar, Grid, Typography, LinearProgress } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
 import makeStyles from '@mui/styles/makeStyles'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Ace } from 'ace-builds'
 import axios from 'axios'
 
@@ -24,13 +28,11 @@ import { HelmRenderReturn, SettingsData, Sources } from './types'
 
 const totalWasmSize = 56719824 // TODO: set the value at build time
 
+const drawerWidth = 280
+
 const useStyles = makeStyles((t) => ({
   root: {
     flexGrow: 1,
-  },
-  navTitle: {
-    flexGrow: 1,
-    marginLeft: '20px',
   },
 }))
 
@@ -41,28 +43,6 @@ initialTemplateSources[ingressFilename] = ingressContent
 initialTemplateSources[notesFilename] = notesContent
 initialTemplateSources[serviceFilename] = serviceContent
 initialTemplateSources[serviceaccountFilename] = serviceaccountContent
-
-const emptySettings = {
-  release: {
-    name: '',
-    namespace: '',
-    revision: '',
-    isUpgrade: '',
-    isInstall: '',
-    service: '',
-  },
-  kubeVersion: {
-    version: '',
-    major: '',
-    minor: '',
-  },
-  helmVersion: {
-    version: '',
-    gitCommit: '',
-    gitTreeState: '',
-    goVersion: '',
-  },
-}
 
 const Playground = (): JSX.Element => {
   const classes = useStyles()
@@ -88,8 +68,39 @@ const Playground = (): JSX.Element => {
     result: '',
   })
 
-  const [showSettings, setShowSettings] = useState(false)
-  const [settings, setSettings] = useState<SettingsData>(emptySettings)
+  const [releaseName, setReleaseName] = useState<string>('sample')
+  const [releaseNamespace, setReleaseNamespace] = useState<string>('default')
+  const [releaseIsUpgrade, setReleaseIsUpgrade] = useState<string>('false')
+  const [releaseIsInstall, setReleaseIsInstall] = useState<string>('false')
+  const [releaseRevision, setReleaseRevision] = useState<string>('1')
+  const [releaseService, setReleaseService] = useState<string>('Helm')
+  const [kubeVersion, setKubeVersion] = useState<string>('v1.20.0')
+  const [helmVersion, setHelmVersion] = useState<string>('v3.6')
+  const [helmGitCommit, setHelmGitCommit] = useState<string>('')
+  const [helmGitTreeState, setHelmGitTreeState] = useState<string>('')
+  const [helmGoVersion, setHelmGoVersion] = useState<string>('go1.17.2')
+
+  const getSettingsObject = (): SettingsData => {
+    return {
+      release: {
+        name: releaseName,
+        namespace: releaseNamespace,
+        isUpgrade: releaseIsUpgrade,
+        isInstall: releaseIsInstall,
+        revision: releaseRevision,
+        service: releaseService,
+      },
+      kubeVersion: {
+        version: kubeVersion,
+      },
+      helmVersion: {
+        version: helmVersion,
+        gitCommit: helmGitCommit,
+        gitTreeState: helmGitTreeState,
+        goVersion: helmGoVersion,
+      },
+    }
+  }
 
   useEffect(() => {
     axios
@@ -117,7 +128,6 @@ const Playground = (): JSX.Element => {
             // @ts-ignore
             window.helmDefaultCapabilities = helmDefaultCapabilities
             setWasmLoaded(true)
-            setSettings(window.helmDefaultCapabilities())
           })
           .catch((err) => {
             console.error('webassembly instantiate error', err)
@@ -132,7 +142,8 @@ const Playground = (): JSX.Element => {
       filesToRender['_helpers.tpl'] = sources['_helpers.tpl']
       filesToRender[selected] = sources[selected]
 
-      const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, JSON.stringify(settings))
+      const settings = JSON.stringify(getSettingsObject())
+      const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, settings)
       setRenderResult(result)
 
       let annotation = {}
@@ -177,7 +188,25 @@ const Playground = (): JSX.Element => {
       setCustomAnnotations(annotation)
       setAceEditorError(tmpError)
     }
-  }, [wasmLoaded, editor, sources, valuesSource, chartSource, settings, selected])
+  }, [
+    wasmLoaded,
+    editor,
+    sources,
+    valuesSource,
+    chartSource,
+    selected,
+    releaseName,
+    releaseNamespace,
+    releaseIsUpgrade,
+    releaseIsInstall,
+    releaseRevision,
+    releaseService,
+    kubeVersion,
+    helmVersion,
+    helmGitCommit,
+    helmGitTreeState,
+    helmGoVersion,
+  ])
 
   useEffect(() => {
     if (wasmLoaded && aceEditor) {
@@ -253,14 +282,9 @@ const Playground = (): JSX.Element => {
     setSources(tmp)
   }
 
-  const handleSettings = () => {
-    setShowSettings(!showSettings)
-  }
-
   return (
-    <>
+    <Box sx={{ display: 'flex' }}>
       <Navigation
-        className={classes.navTitle}
         // handleImport={handleImport}
         handleExport={() => {
           const options = {
@@ -271,81 +295,114 @@ const Playground = (): JSX.Element => {
           }
           handleExport('test', options)
         }}
-        handleSettings={handleSettings}
       />
-      <Box sx={{ pt: 10, pb: 8 }}>
-        {wasmLoaded ? (
-          <>
-            {wasmError !== '' ? (
-              <Container maxWidth="md" disableGutters style={{ textAlign: 'center' }}>
-                <p>{wasmError}</p>
-              </Container>
-            ) : (
-              <>
-                {showSettings ? (
-                  <Container maxWidth="md" disableGutters>
-                    <Settings
-                      show
-                      data={settings}
-                      handleSave={(data) => {
-                        setShowSettings(false)
-                        setSettings(data)
-                      }}
-                    />
-                  </Container>
-                ) : (
-                  <Container maxWidth="xl" disableGutters>
-                    <Grid container spacing={0}>
-                      <Grid item xs={2}>
-                        <FileViewer
-                          className={classes.root}
-                          onNodeSelect={handleSelect}
-                          sources={sources}
-                          onDelete={handleDelete}
-                          selected={selected}
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+        }}
+      >
+        <Toolbar />
+        <Box sx={{ overflow: 'auto' }}>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="settings" id="settings">
+              <Typography>Settings</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Settings
+                releaseName={releaseName}
+                releaseNamespace={releaseNamespace}
+                releaseIsUpgrade={releaseIsUpgrade}
+                releaseIsInstall={releaseIsInstall}
+                releaseRevision={releaseRevision}
+                releaseService={releaseService}
+                kubeVersion={kubeVersion}
+                helmVersion={helmVersion}
+                helmGitCommit={helmGitCommit}
+                helmGitTreeState={helmGitTreeState}
+                helmGoVersion={helmGoVersion}
+                onChangeReleaseName={(d) => setReleaseName(d)}
+                onChangeReleaseNamespace={(d) => setReleaseNamespace(d)}
+                onChangeReleaseIsUpgrade={(d) => setReleaseIsUpgrade(d)}
+                onChangeReleaseIsInstall={(d) => setReleaseIsInstall(d)}
+                onChangeReleaseRevision={(d) => setReleaseRevision(d)}
+                onChangeReleaseService={(d) => setReleaseService(d)}
+                onChangeKubeVersion={(d) => setKubeVersion(d)}
+                onChangeHelmVersion={(d) => setHelmVersion(d)}
+                onChangeHelmGitCommit={(d) => setHelmGitCommit(d)}
+                onChangeHelmGitTreeState={(d) => setHelmGitTreeState(d)}
+                onChangeHelmGoVersion={(d) => setHelmGoVersion(d)}
+              />
+            </AccordionDetails>
+          </Accordion>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="files" id="files">
+              <Typography>Files</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <FileViewer
+                className={classes.root}
+                onNodeSelect={handleSelect}
+                sources={sources}
+                onDelete={handleDelete}
+                selected={selected}
+              />
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
+        <Box sx={{ pt: 10, pb: 8 }}>
+          {wasmLoaded ? (
+            <>
+              {wasmError !== '' ? (
+                <Container maxWidth="md" disableGutters style={{ textAlign: 'center' }}>
+                  <p>{wasmError}</p>
+                </Container>
+              ) : (
+                <Container maxWidth="xl" disableGutters>
+                  <Grid container spacing={0}>
+                    <Grid item xs={6}>
+                      <Typography variant="subtitle1">
+                        <input
+                          value={fileRename === '' ? selected : fileRename}
+                          style={{ border: 'none', width: '100%' }}
+                          onChange={(e) => {
+                            setfileRename(e.target.value)
+                          }}
+                          onBlur={(e) => {
+                            const tmp = sources
+                            const tmpContent = sources[selected]
+                            delete tmp[selected]
+                            tmp[e.target.value] = tmpContent
+                            setSources(tmp)
+                            setSelected(e.target.value)
+                            setfileRename('')
+                          }}
                         />
-                      </Grid>
+                      </Typography>
 
-                      <Grid item xs={5}>
-                        <Typography variant="subtitle1">
-                          <input
-                            value={fileRename === '' ? selected : fileRename}
-                            style={{ border: 'none', width: '100%' }}
-                            onChange={(e) => {
-                              setfileRename(e.target.value)
-                            }}
-                            onBlur={(e) => {
-                              const tmp = sources
-                              const tmpContent = sources[selected]
-                              delete tmp[selected]
-                              tmp[e.target.value] = tmpContent
-                              setSources(tmp)
-                              setSelected(e.target.value)
-                              setfileRename('')
-                            }}
-                          />
-                        </Typography>
-
-                        <Editor value={editor} onChange={handleEditor} annotations={[customAnnotations]} />
-                      </Grid>
-
-                      <Grid item xs={5}>
-                        <RenderResult data={renderResult} />
-                      </Grid>
+                      <Editor value={editor} onChange={handleEditor} annotations={[customAnnotations]} />
                     </Grid>
-                  </Container>
-                )}
-              </>
-            )}
-          </>
-        ) : (
-          <Container maxWidth="md" disableGutters style={{ textAlign: 'center' }}>
-            <LinearProgress variant="determinate" value={wasmLoadProgress} />
-            <p>Loading Helm Renderer</p>
-          </Container>
-        )}
+
+                    <Grid item xs={6}>
+                      <RenderResult data={renderResult} />
+                    </Grid>
+                  </Grid>
+                </Container>
+              )}
+            </>
+          ) : (
+            <Container maxWidth="md" disableGutters style={{ textAlign: 'center' }}>
+              <LinearProgress variant="determinate" value={wasmLoadProgress} />
+              <p>Loading Helm Renderer</p>
+            </Container>
+          )}
+        </Box>
       </Box>
-    </>
+    </Box>
   )
 }
 
