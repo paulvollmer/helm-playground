@@ -1,5 +1,9 @@
 import React from 'react'
-import { AppBar, Button, Toolbar, Typography, IconButton } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import Logo from './Logo'
 

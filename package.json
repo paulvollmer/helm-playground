@@ -27,8 +27,8 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "PUBLIC_URL=/ react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_VERSION=$(git rev-list -1 HEAD) REACT_APP_WASM_SIZE=$(wc -c <'./public/main.wasm') PUBLIC_URL=/ react-scripts start",
+    "build": "REACT_APP_VERSION=$(git rev-list -1 HEAD) REACT_APP_WASM_SIZE=$(wc -c <'./public/main.wasm') react-scripts build",
     "build:wasm-exec": "cat $(go env GOROOT)/misc/wasm/wasm_exec.js > public/wasm_exec.js",
     "build:wasm": "cd pkg/render && GOOS=js GOARCH=wasm go build  -o ../../public/main-big.wasm",
     "test": "react-scripts test",

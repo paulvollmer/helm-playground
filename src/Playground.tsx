@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Drawer, Toolbar, Grid, Typography, LinearProgress } from '@mui/material'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import Drawer from '@mui/material/Drawer'
+import Grid from '@mui/material/Grid'
+import LinearProgress from '@mui/material/LinearProgress'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 import makeStyles from '@mui/styles/makeStyles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Ace } from 'ace-builds'
@@ -25,8 +31,9 @@ import handleExport from './components/Export'
 import Editor from './components/Editor'
 import Settings from './components/Settings'
 import { HelmRenderReturn, SettingsData, Sources } from './types'
+import { version, wasmSize } from './envvars'
 
-const totalWasmSize = 56719824 // TODO: set the value at build time
+console.log(`git hash: ${version}`)
 
 const drawerWidth = 280
 
@@ -109,7 +116,7 @@ const Playground = (): JSX.Element => {
         url: 'main.wasm',
         responseType: 'arraybuffer',
         onDownloadProgress: (p) => {
-          setWasmLoadProgress((p.loaded / totalWasmSize) * 100)
+          setWasmLoadProgress((p.loaded / wasmSize) * 100)
         },
       })
       .then((res) => {

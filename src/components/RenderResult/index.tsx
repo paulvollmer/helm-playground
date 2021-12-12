@@ -1,7 +1,7 @@
 import React from 'react'
 import AceEditor from 'react-ace'
 import 'ace-builds/src-noconflict/mode-yaml'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { HelmRenderReturn } from '../../types'
 import { RenderError } from './RenderError'
 
