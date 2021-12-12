@@ -1,7 +1,6 @@
 declare global {
   interface Window {
     helmRender: (templates: string, values: string, chart: string, settings: string) => HelmRenderReturn
-    helmDefaultCapabilities: () => SettingsData
   }
 }
 
@@ -38,8 +37,6 @@ export type SettingsRelease = {
 
 export type SettingsKubeVersion = {
   version: string
-  major: string
-  minor: string
 }
 
 export type SettingsHelmVersion = {

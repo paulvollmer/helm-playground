@@ -1,192 +1,136 @@
-import React, { useState } from 'react'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { SettingsData } from '../../types'
+import React from 'react'
+import Autocomplete from '@mui/material/Autocomplete'
+import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import kubernetesVersions from './kubernetesVersions'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    typography: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(2),
-    },
     textfield: {
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(2),
     },
   })
 )
 
-const kubernetesVersions = [
-  'v1.22.0',
-  'v1.21.0',
-  'v1.20.0',
-  'v1.19.0',
-  'v1.18.0',
-  'v1.17.0',
-  'v1.16.0',
-  'v1.15.0',
-  'v1.14.0',
-  'v1.13.0',
-  'v1.12.0',
-  'v1.11.0',
-  'v1.10.0',
-  'v1.9.0',
-  'v1.8.0',
-  'v1.7.0',
-  'v1.6.0',
-  'v1.5.0',
-  'v1.4.0',
-  'v1.3.0',
-  'v1.2.0',
-  'v1.1.0',
-  'v1.0.0',
-]
-
 export type SettingsProps = {
-  show: boolean
-  data: SettingsData
-  handleSave: (d: SettingsData) => void
+  releaseName: string
+  releaseNamespace: string
+  releaseIsUpgrade: string
+  releaseIsInstall: string
+  releaseRevision: string
+  releaseService: string
+  kubeVersion: string
+  helmVersion: string
+  helmGitCommit: string
+  helmGitTreeState: string
+  helmGoVersion: string
+  onChangeReleaseName: (v: string) => void
+  onChangeReleaseNamespace: (v: string) => void
+  onChangeReleaseIsUpgrade: (v: string) => void
+  onChangeReleaseIsInstall: (v: string) => void
+  onChangeReleaseRevision: (v: string) => void
+  onChangeReleaseService: (v: string) => void
+  onChangeKubeVersion: (v: string) => void
+  onChangeHelmVersion: (v: string) => void
+  onChangeHelmGitCommit: (v: string) => void
+  onChangeHelmGitTreeState: (v: string) => void
+  onChangeHelmGoVersion: (v: string) => void
 }
 
 const Settings = (props: SettingsProps): JSX.Element => {
   const classes = useStyles()
 
-  const [releaseName, setReleaseName] = useState<string>(props.data.release.name)
-  const [releaseNamespace, setReleaseNamespace] = useState<string>(props.data.release.namespace)
-  const [releaseIsUpgrade, setReleaseIsUpgrade] = useState<string>(props.data.release.isUpgrade)
-  const [releaseIsInstall, setReleaseIsInstall] = useState<string>(props.data.release.isInstall)
-  const [releaseRevision, setReleaseRevision] = useState<string>(props.data.release.revision)
-  const [releaseService, setReleaseService] = useState<string>(props.data.release.service)
-
-  const [kubeVersion, setKubeVersion] = useState<string>(props.data.kubeVersion.version)
-  // const [kubeMajor, setKubeMajor] = useState<string>(props.data.kubeVersion.major)
-  // const [kubeMinor, setKubeMinor] = useState<string>(props.data.kubeVersion.minor)
-
-  const [helmVersion, setHelmVersion] = useState<string>(props.data.helmVersion.version)
-  const [helmGitCommit, setHelmGitCommit] = useState<string>(props.data.helmVersion.gitCommit)
-  const [helmGitTreeState, setHelmGitTreeState] = useState<string>(props.data.helmVersion.gitTreeState)
-  const [helmGoVersion, setHelmGoVersion] = useState<string>(props.data.helmVersion.goVersion)
-
-  const handleClick = () => {
-    const data: SettingsData = {
-      release: {
-        name: releaseName,
-        namespace: releaseNamespace,
-        isUpgrade: releaseIsUpgrade,
-        isInstall: releaseIsInstall,
-        revision: releaseRevision,
-        service: releaseService,
-      },
-      kubeVersion: {
-        version: kubeVersion,
-        major: '', // kubeMajor,
-        minor: '', // kubeMinor,
-      },
-      helmVersion: {
-        version: helmVersion,
-        gitCommit: helmGitCommit,
-        gitTreeState: helmGitTreeState,
-        goVersion: helmGoVersion,
-      },
-    }
-    props.handleSave(data)
-  }
-
   return (
-    <Paper style={{ padding: '2em' }}>
-      <Grid container spacing={2}>
-        <Grid item md={12}>
-          <Typography variant="h4">Settings</Typography>
+    <>
+      <Box sx={{ marginBottom: 2 }}>
+        <Typography variant="button">Release</Typography>
+      </Box>
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="release-name"
+        label="Release Name"
+        value={props.releaseName}
+        onChange={(e) => props.onChangeReleaseName(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="release-namespace"
+        label="Release Namespace"
+        value={props.releaseNamespace}
+        onChange={(e) => props.onChangeReleaseNamespace(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="release-isupgrade"
+        label="Release Is Upgrade"
+        value={props.releaseIsUpgrade}
+        onChange={(e) => props.onChangeReleaseIsUpgrade(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="release-isinstall"
+        label="Release Is Install"
+        value={props.releaseIsInstall}
+        onChange={(e) => props.onChangeReleaseIsInstall(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="release-revision"
+        label="Release Revision"
+        value={props.releaseRevision}
+        onChange={(e) => props.onChangeReleaseRevision(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="release-service"
+        label="Release Service"
+        value={props.releaseService}
+        onChange={(e) => props.onChangeReleaseService(e.target.value)}
+      />
 
-          <Typography variant="h5" className={classes.typography}>
-            Release
-          </Typography>
+      <Box sx={{ marginTop: 3, marginBottom: 2 }}>
+        <Typography variant="button">Kubernetes Version</Typography>
+      </Box>
+      <Autocomplete
+        options={kubernetesVersions}
+        getOptionLabel={(option) => option}
+        freeSolo
+        value={props.kubeVersion}
+        onChange={(e, v) => {
+          if (v !== null) {
+            props.onChangeKubeVersion(v)
+          }
+        }}
+        renderInput={(params) => (
           <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="release-name"
-            label="Release Name"
-            value={releaseName}
-            onChange={(e) => setReleaseName(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="release-namespace"
-            label="Release Namespace"
-            value={releaseNamespace}
-            onChange={(e) => setReleaseNamespace(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="release-isupgrade"
-            label="Release Is Upgrade"
-            value={releaseIsUpgrade}
-            onChange={(e) => setReleaseIsUpgrade(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="release-isinstall"
-            label="Release Is Install"
-            value={releaseIsInstall}
-            onChange={(e) => setReleaseIsInstall(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="release-revision"
-            label="Release Revision"
-            value={releaseRevision}
-            onChange={(e) => setReleaseRevision(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="release-service"
-            label="Release Service"
-            value={releaseService}
-            onChange={(e) => setReleaseService(e.target.value)}
-          />
-        </Grid>
-
-        <Grid item md={6}>
-          <Typography variant="h5" className={classes.typography}>
-            Kubernetes Version
-          </Typography>
-
-          <Autocomplete
-            options={kubernetesVersions}
-            getOptionLabel={(option) => option}
-            freeSolo
-            value={kubeVersion}
-            onChange={(e, v) => {
-              if (v !== null) {
-                setKubeVersion(v)
-              }
-            }}
-            renderInput={(params) => (
-              <TextField
                 {...params} // eslint-disable-line
-                className={classes.textfield}
-                fullWidth
-                variant="standard"
-                id="kubernetes-version"
-                label="Kubernetes Version"
-                onChange={(e) => {
-                  setKubeVersion(e.target.value)
-                }}
-              />
-            )}
+            className={classes.textfield}
+            fullWidth
+            variant="standard"
+            id="kubernetes-version"
+            label="Kubernetes Version"
+            onChange={(e) => {
+              props.onChangeKubeVersion(e.target.value)
+            }}
           />
-          {/* <TextField
+        )}
+      />
+      {/* <TextField
                         className={classes.textfield}
                         fullWidth
                         variant="standard"
@@ -204,57 +148,47 @@ const Settings = (props: SettingsProps): JSX.Element => {
                         value={kubeMinor}
                         onChange={(e) => setKubeMinor(e.target.value)}
                     /> */}
-        </Grid>
 
-        <Grid item md={6}>
-          <Typography variant="h5" className={classes.typography}>
-            Helm Version
-          </Typography>
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="helm-version"
-            label="Version"
-            value={helmVersion}
-            onChange={(e) => setHelmVersion(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="helm-goversion"
-            label="GoVersion"
-            value={helmGoVersion}
-            onChange={(e) => setHelmGoVersion(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="helm-gitcommit"
-            label="GitCommit"
-            value={helmGitCommit}
-            onChange={(e) => setHelmGitCommit(e.target.value)}
-          />
-          <TextField
-            className={classes.textfield}
-            fullWidth
-            variant="standard"
-            id="helm-gittreestate"
-            label="GitTreeState"
-            value={helmGitTreeState}
-            onChange={(e) => setHelmGitTreeState(e.target.value)}
-          />
-        </Grid>
-
-        <Grid item md={12}>
-          <Button variant="contained" color="primary" style={{ marginTop: '2em' }} onClick={handleClick}>
-            Save Settings
-          </Button>
-        </Grid>
-      </Grid>
-    </Paper>
+      <Box sx={{ marginTop: 3, marginBottom: 2 }}>
+        <Typography variant="button">Helm Version</Typography>
+      </Box>
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="helm-version"
+        label="Version"
+        value={props.helmVersion}
+        onChange={(e) => props.onChangeHelmVersion(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="helm-goversion"
+        label="GoVersion"
+        value={props.helmGoVersion}
+        onChange={(e) => props.onChangeHelmGoVersion(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="helm-gitcommit"
+        label="GitCommit"
+        value={props.helmGitCommit}
+        onChange={(e) => props.onChangeHelmGitCommit(e.target.value)}
+      />
+      <TextField
+        className={classes.textfield}
+        fullWidth
+        variant="standard"
+        id="helm-gittreestate"
+        label="GitTreeState"
+        value={props.helmGitTreeState}
+        onChange={(e) => props.onChangeHelmGitTreeState(e.target.value)}
+      />
+    </>
   )
 }
 
