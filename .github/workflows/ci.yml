@@ -14,16 +14,29 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: 1.17
 
       - name: Get dependencies
         run: GOOS=js GOARCH=wasm go get ./...
 
+      - name: Prebuild
+        run: make prebuild
+
       - name: Build
-        run: cd pkg/render && GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ../../public/main.wasm
+        run: make build
 
       - name: Test
-        run: GOOS=js GOARCH=wasm go test ./...
+        run: make test
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wasm-build
+          path: public/main.wasm
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wasm-exec
+          path: public/wasm_exec.js
 
   build-app:
     runs-on: ubuntu-latest
@@ -69,6 +82,17 @@ jobs:
         with:
           name: react-build
           path: build
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: wasm-build
+          path: build/main.wasm
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: wasm-exec
+          path: build/wasm_exec.js
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
