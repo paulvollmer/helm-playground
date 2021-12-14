@@ -3,8 +3,10 @@ all: test prebuild build
 test:
 	@ GOOS=js GOARCH=wasm go test ./pkg/...
 
-prebuild:
+prebuild: public/wasm_exec.js
+public/wasm_exec.js:
 	@ cat $(shell go env GOROOT)/misc/wasm/wasm_exec.js > public/wasm_exec.js
 
-build:
+build: public/main.wasm
+public/main.wasm:
 	@ cd pkg/render && GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ../../public/main.wasm
