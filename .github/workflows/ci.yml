@@ -86,12 +86,12 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: wasm-build
-          path: build/main.wasm
+          path: build
       
       - uses: actions/download-artifact@v2
         with:
           name: wasm-exec
-          path: build/wasm_exec.js
+          path: build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
