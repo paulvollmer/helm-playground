@@ -73,8 +73,8 @@ func createChartValues(metadata *chart.Metadata, values InputValues, s *settings
 		"Capabilities": map[string]interface{}{
 			"KubeVersion": map[string]interface{}{
 				"Version": s.KubeVersion.Version,
-				//"Major":   s.KubeVersion.Major,
-				//"Minor":   s.KubeVersion.Minor,
+				// "Major":   s.KubeVersion.Major,
+				// "Minor":   s.KubeVersion.Minor,
 			},
 			"HelmVersion": map[string]interface{}{
 				"Version":      s.HelmVersion.Version,
@@ -82,10 +82,10 @@ func createChartValues(metadata *chart.Metadata, values InputValues, s *settings
 				"GitTreeState": s.HelmVersion.GitTreeState,
 				"GoVersion":    s.HelmVersion.GoVersion,
 			},
-			//"Template": map[string]interface{}{
-			//	"Name":     "",
-			//	"BasePath": "",
-			//},
+			// "Template": map[string]interface{}{
+			// 	"Name":     "",
+			// 	"BasePath": "",
+			// },
 		},
 	}
 }
@@ -97,8 +97,8 @@ func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput Input
 		Lock:      nil,
 		Templates: templates,
 		Values:    map[string]interface{}{
-			//"image": "",
-			//"labels": map[string]interface{}{},
+			// "image": "",
+			// "labels": map[string]interface{}{},
 		},
 		Schema: []byte{},
 		Files:  nil,

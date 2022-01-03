@@ -146,15 +146,15 @@ func NewKubeVersionFromJSValue(value js.Value) (*KubeVersion, error) {
 	}
 	kubeVersion.Version = value.Get("version").String()
 
-	//if value.Get("major").Type() != js.TypeString {
-	//	return nil, errors.New("major must be type of string")
-	//}
-	//kubeVersion.Major = value.Get("major").String()
+	// if value.Get("major").Type() != js.TypeString {
+	// 	return nil, errors.New("major must be type of string")
+	// }
+	// kubeVersion.Major = value.Get("major").String()
 	//
-	//if value.Get("minor").Type() != js.TypeString {
-	//	return nil, errors.New("minor must be type of string")
-	//}
-	//kubeVersion.Minor = value.Get("minor").String()
+	// if value.Get("minor").Type() != js.TypeString {
+	// 	return nil, errors.New("minor must be type of string")
+	// }
+	// kubeVersion.Minor = value.Get("minor").String()
 
 	return kubeVersion, nil
 }

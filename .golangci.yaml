@@ -13,7 +13,7 @@ linters:
     - error
     - format
     - import
-#    - metalinter
+    - metalinter
     - module
     - performance
 #    - style
