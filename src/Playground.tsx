@@ -32,8 +32,8 @@ import Editor from './components/Editor'
 import Settings from './components/Settings'
 import { HelmRenderReturn, SettingsData, Sources } from './types'
 import { version, wasmSize } from './envvars'
-import {defaultHelmGitCommit, defaultHelmGitTreeState, defaultHelmGoVersion, defaultHelmVersion} from "./defaults/helm";
-import {defaultKubernetesVersion} from "./components/Settings/kubernetesVersions";
+import { defaultHelmGitCommit, defaultHelmGitTreeState, defaultHelmGoVersion, defaultHelmVersion } from './defaults/helm'
+import { defaultKubernetesVersion } from './components/Settings/kubernetesVersions'
 
 console.log(`git hash: ${version}`)
 
