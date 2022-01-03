@@ -3,12 +3,13 @@
 package render
 
 import (
-	"github.com/paulvollmer/helm-playground/pkg/errors"
-	"github.com/paulvollmer/helm-playground/pkg/settings"
-	"helm.sh/helm/v3/pkg/chart"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"helm.sh/helm/v3/pkg/chart"
+
+	"github.com/paulvollmer/helm-playground/pkg/errors"
+	"github.com/paulvollmer/helm-playground/pkg/settings"
 )
 
 func TestParseInputTemplates(t *testing.T) {

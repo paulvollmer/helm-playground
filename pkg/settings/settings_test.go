@@ -4,9 +4,10 @@ package settings
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"syscall/js"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewKubeVersionFromJSValue(t *testing.T) {

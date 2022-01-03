@@ -4,12 +4,14 @@ package render
 
 import (
 	"encoding/json"
-	"github.com/paulvollmer/helm-playground/pkg/errors"
-	"github.com/paulvollmer/helm-playground/pkg/settings"
+
 	"gopkg.in/yaml.v2"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/engine"
+
+	"github.com/paulvollmer/helm-playground/pkg/errors"
+	"github.com/paulvollmer/helm-playground/pkg/settings"
 )
 
 type InputTemplates map[string]string

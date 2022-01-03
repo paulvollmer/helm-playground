@@ -3,10 +3,11 @@
 package main
 
 import (
+	"syscall/js"
+
 	"github.com/paulvollmer/helm-playground/pkg/errors"
 	"github.com/paulvollmer/helm-playground/pkg/render"
 	"github.com/paulvollmer/helm-playground/pkg/settings"
-	"syscall/js"
 )
 
 func main() {
