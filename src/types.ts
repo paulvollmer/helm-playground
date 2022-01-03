@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    helmRender: (templates: string, values: string, chart: string, settings: string) => HelmRenderReturn
+    helmRender: (templates: string, values: string, chart: string, settings: SettingsData) => HelmRenderReturn
   }
 }
 

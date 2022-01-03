@@ -147,8 +147,7 @@ const Playground = (): JSX.Element => {
       filesToRender['_helpers.tpl'] = sources['_helpers.tpl']
       filesToRender[selected] = sources[selected]
 
-      const settings = JSON.stringify(getSettingsObject())
-      const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, settings)
+      const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, getSettingsObject())
       setRenderResult(result)
 
       let annotation = {}
