@@ -37,5 +37,5 @@ func helmRender(this js.Value, p []js.Value) interface{} {
 		return errors.ReturnObjectErrorSettings(errSettings)
 	}
 
-	return render.Render(chartMetadata, inputTemplate, valuesInput, *s)
+	return render.Render(chartMetadata, inputTemplate, valuesInput, s)
 }
