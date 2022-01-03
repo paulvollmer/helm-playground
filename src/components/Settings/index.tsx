@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
-import kubernetesVersions from './kubernetesVersions'
+import { kubernetesVersions } from './kubernetesVersions'
 
 const useStyles = makeStyles((theme) =>
   createStyles({

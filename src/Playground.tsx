@@ -32,6 +32,8 @@ import Editor from './components/Editor'
 import Settings from './components/Settings'
 import { HelmRenderReturn, SettingsData, Sources } from './types'
 import { version, wasmSize } from './envvars'
+import {defaultHelmGitCommit, defaultHelmGitTreeState, defaultHelmGoVersion, defaultHelmVersion} from "./defaults/helm";
+import {defaultKubernetesVersion} from "./components/Settings/kubernetesVersions";
 
 console.log(`git hash: ${version}`)
 
@@ -81,11 +83,11 @@ const Playground = (): JSX.Element => {
   const [releaseIsInstall, setReleaseIsInstall] = useState<string>('false')
   const [releaseRevision, setReleaseRevision] = useState<string>('1')
   const [releaseService, setReleaseService] = useState<string>('Helm')
-  const [kubeVersion, setKubeVersion] = useState<string>('v1.20.0')
-  const [helmVersion, setHelmVersion] = useState<string>('v3.6')
-  const [helmGitCommit, setHelmGitCommit] = useState<string>('')
-  const [helmGitTreeState, setHelmGitTreeState] = useState<string>('')
-  const [helmGoVersion, setHelmGoVersion] = useState<string>('go1.17.2')
+  const [kubeVersion, setKubeVersion] = useState<string>(defaultKubernetesVersion)
+  const [helmVersion, setHelmVersion] = useState<string>(defaultHelmVersion)
+  const [helmGitCommit, setHelmGitCommit] = useState<string>(defaultHelmGitCommit)
+  const [helmGitTreeState, setHelmGitTreeState] = useState<string>(defaultHelmGitTreeState)
+  const [helmGoVersion, setHelmGoVersion] = useState<string>(defaultHelmGoVersion)
 
   const getSettingsObject = (): SettingsData => {
     return {
