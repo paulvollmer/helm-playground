@@ -1,9 +1,9 @@
 all: test prebuild build
 
 test:
-	@ go test ./pkg/errors
-	@ go test ./pkg/render
-	@ go test ./pkg/settings
+	@ go test -cover ./pkg/errors
+	@ go test -cover ./pkg/render
+	@ go test -cover ./pkg/settings
 
 prebuild: public/wasm_exec.js
 public/wasm_exec.js:
