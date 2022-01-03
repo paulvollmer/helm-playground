@@ -62,8 +62,8 @@ jobs:
       - name: Lint
         run: yarn run lint
 
-      #- name: Run the tests
-      #  run: yarn run test
+      - name: Run the tests
+        run: yarn run test
 
       - name: Build
         run: CI=false yarn run build # TODO: remove CI=false when all eslint errors are solved
