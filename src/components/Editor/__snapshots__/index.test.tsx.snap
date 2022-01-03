@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Editor render 1`] = `
+<div
+  id="editor"
+  style={
+    Object {
+      "height": "calc(100vh - 100px)",
+      "width": "100%",
+    }
+  }
+/>
+`;

@@ -13,8 +13,12 @@ export const RenderError = (props: RenderErrorProps): JSX.Element => {
       <Typography variant="h6">{props.error.message}</Typography>
       <Typography variant="body1">
         File: {props.error.file}
-        <br />
-        {props.error.line ? `Line: ${props.error.line}` : ''}
+        {props.error.line ? (
+          <>
+            <br />
+            {`Line: ${props.error.line}`}
+          </>
+        ) : null}
       </Typography>
     </div>
   )

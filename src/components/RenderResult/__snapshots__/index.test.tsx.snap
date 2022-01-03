@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RenderResult render with result 1`] = `
+Array [
+  <h6
+    className="MuiTypography-root MuiTypography-subtitle1 css-10wpov9-MuiTypography-root"
+  >
+    Render Output
+  </h6>,
+  <div
+    id="editor"
+    style={
+      Object {
+        "height": "calc(100vh - 100px)",
+        "width": "100%",
+      }
+    }
+  />,
+]
+`;
+
+exports[`RenderResult renders with error 1`] = `
+<div>
+  <h6
+    className="MuiTypography-root MuiTypography-subtitle1 css-10wpov9-MuiTypography-root"
+  >
+    Error Kind: 
+    test-kind
+  </h6>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    test-message
+  </h6>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  >
+    File: 
+    test-file
+    <br />
+    Line: 1
+  </p>
+</div>
+`;

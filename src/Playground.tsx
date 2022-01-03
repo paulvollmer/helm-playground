@@ -39,7 +39,7 @@ console.log(`git hash: ${version}`)
 
 const drawerWidth = 280
 
-const useStyles = makeStyles((t) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
@@ -161,14 +161,14 @@ const Playground = (): JSX.Element => {
               switch (result.error.file) {
                 case valuesFilename:
                   tmpError = {
-                    row: result.error.line - 1,
+                    row: result.error.line ? result.error.line - 1 : 0,
                     text: result.error.message,
                   }
                   break
 
                 case chartFilename:
                   tmpError = {
-                    row: result.error.line - 1,
+                    row: result.error.line ? result.error.line - 1 : 0,
                     text: result.error.message,
                   }
                   break
@@ -179,7 +179,7 @@ const Playground = (): JSX.Element => {
 
             case 'render':
               annotation = {
-                row: result.error.line - 1,
+                row: result.error.line ? result.error.line - 1 : 0,
                 column: 0,
                 text: result.error.message,
                 type: 'error',
