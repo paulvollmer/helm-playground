@@ -3,13 +3,13 @@
 package render_test
 
 import (
-	"github.com/paulvollmer/helm-playground/pkg/render"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/chart"
 
 	"github.com/paulvollmer/helm-playground/pkg/errors"
+	"github.com/paulvollmer/helm-playground/pkg/render"
 	"github.com/paulvollmer/helm-playground/pkg/settings"
 )
 

@@ -5,10 +5,11 @@ package errors_test
 import (
 	goerrors "errors"
 	"fmt"
-	"github.com/paulvollmer/helm-playground/pkg/errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/paulvollmer/helm-playground/pkg/errors"
 )
 
 func TestHasYamlLinePrefix(t *testing.T) {
@@ -87,7 +88,7 @@ func TestYamlErrorGetMessage(t *testing.T) {
 
 		t.Run(tt.testName, func(t *testing.T) {
 			t.Parallel()
-			
+
 			result := errors.YamlErrorGetMessage(goerrors.New(tt.input))
 			assert.Equal(t, tt.expectedResult, result)
 		})

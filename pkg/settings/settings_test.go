@@ -4,11 +4,12 @@ package settings_test
 
 import (
 	"errors"
-	"github.com/paulvollmer/helm-playground/pkg/settings"
 	"syscall/js"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/paulvollmer/helm-playground/pkg/settings"
 )
 
 func TestNewKubeVersionFromJSValue(t *testing.T) {

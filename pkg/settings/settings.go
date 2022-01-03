@@ -106,8 +106,8 @@ func NewReleaseFromJSValue(value js.Value) (*Release, error) {
 
 type KubeVersion struct {
 	Version string
-	//Major   string
-	//Minor   string
+	// Major   string
+	// Minor   string
 }
 
 func NewKubeVersionFromJSValue(value js.Value) (*KubeVersion, error) {

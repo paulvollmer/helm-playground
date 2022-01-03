@@ -8,11 +8,11 @@ linters:
     - gci
   presets:
 #    - bugs
-#    - comment
+    - comment
 #    - complexity
 #    - error
-#    - format
-#    - import
+    - format
+    - import
 #    - metalinter
 #    - module
 #    - performance
