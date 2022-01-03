@@ -1,4 +1,5 @@
 const kubernetesVersions = [
+  'v1.23.0',
   'v1.22.0',
   'v1.21.0',
   'v1.20.0',
