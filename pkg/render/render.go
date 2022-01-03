@@ -5,7 +5,7 @@ package render
 import (
 	"encoding/json"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/engine"
@@ -42,7 +42,7 @@ func ParseInputValues(i string) (InputValues, map[string]interface{}) {
 }
 
 func ParseInputChartMetadata(i string) (*chart.Metadata, map[string]interface{}) {
-	chartMetadata := chart.Metadata{}
+	var chartMetadata chart.Metadata
 	err := yaml.Unmarshal([]byte(i), &chartMetadata)
 	if err != nil {
 		return nil, errors.ReturnObjectErrorChartYaml(err)
@@ -73,8 +73,8 @@ func createChartValues(metadata *chart.Metadata, values InputValues, s *settings
 		"Capabilities": map[string]interface{}{
 			"KubeVersion": map[string]interface{}{
 				"Version": s.KubeVersion.Version,
-				"Major":   s.KubeVersion.Major,
-				"Minor":   s.KubeVersion.Minor,
+				//"Major":   s.KubeVersion.Major,
+				//"Minor":   s.KubeVersion.Minor,
 			},
 			"HelmVersion": map[string]interface{}{
 				"Version":      s.HelmVersion.Version,
@@ -92,13 +92,16 @@ func createChartValues(metadata *chart.Metadata, values InputValues, s *settings
 
 func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput InputValues, s *settings.Settings) map[string]interface{} {
 	chrt := &chart.Chart{
+		Raw:       nil,
 		Metadata:  metadata,
+		Lock:      nil,
 		Templates: templates,
 		Values:    map[string]interface{}{
 			//"image": "",
 			//"labels": map[string]interface{}{},
 		},
 		Schema: []byte{},
+		Files:  nil,
 	}
 
 	values := createChartValues(metadata, valuesInput, s)

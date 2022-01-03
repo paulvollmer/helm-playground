@@ -8,17 +8,17 @@ linters:
     - gci
   presets:
 #    - bugs
-    - comment
+#    - comment
 #    - complexity
 #    - error
-    - format
+#    - format
 #    - import
 #    - metalinter
 #    - module
 #    - performance
 #    - style
-#    - test
-#    - unused
+    - test
+    - unused
 
 linters-settings:
   goimports:

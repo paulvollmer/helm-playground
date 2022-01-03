@@ -1,16 +1,19 @@
 //go:build js && wasm
 
-package errors
+package errors_test
 
 import (
-	"errors"
+	goerrors "errors"
 	"fmt"
+	"github.com/paulvollmer/helm-playground/pkg/errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHasYamlLinePrefix(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName       string
 		input          string
@@ -28,14 +31,20 @@ func TestHasYamlLinePrefix(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result := HasYamlLinePrefix(errors.New(tt.input))
+			t.Parallel()
+
+			result := errors.HasYamlLinePrefix(goerrors.New(tt.input))
 			assert.Equal(t, result, tt.expectedResult, fmt.Sprintf("expect %v for string %q", tt.expectedResult, tt.input))
 		})
 	}
 }
 
 func TestYamlErrorGetLine(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName       string
 		input          string
@@ -48,14 +57,20 @@ func TestYamlErrorGetLine(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result := YamlErrorGetLine(errors.New(tt.input))
+			t.Parallel()
+
+			result := errors.YamlErrorGetLine(goerrors.New(tt.input))
 			assert.Equal(t, tt.expectedResult, result)
 		})
 	}
 }
 
 func TestYamlErrorGetMessage(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName       string
 		input          string
@@ -68,8 +83,12 @@ func TestYamlErrorGetMessage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result := YamlErrorGetMessage(errors.New(tt.input))
+			t.Parallel()
+			
+			result := errors.YamlErrorGetMessage(goerrors.New(tt.input))
 			assert.Equal(t, tt.expectedResult, result)
 		})
 	}

@@ -1,9 +1,10 @@
 //go:build js && wasm
 
-package settings
+package settings_test
 
 import (
 	"errors"
+	"github.com/paulvollmer/helm-playground/pkg/settings"
 	"syscall/js"
 	"testing"
 
@@ -11,10 +12,12 @@ import (
 )
 
 func TestNewKubeVersionFromJSValue(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName    string
 		value       js.Value
-		expected    *KubeVersion
+		expected    *settings.KubeVersion
 		expectedErr error
 	}{
 		{
@@ -25,7 +28,7 @@ func TestNewKubeVersionFromJSValue(t *testing.T) {
 		{
 			testName:    "ok",
 			value:       js.ValueOf(map[string]interface{}{"version": "1.0.0"}),
-			expected:    &KubeVersion{Version: "1.0.0"},
+			expected:    &settings.KubeVersion{Version: "1.0.0"},
 			expectedErr: nil,
 		},
 		{
@@ -36,8 +39,11 @@ func TestNewKubeVersionFromJSValue(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.testName, func(t *testing.T) {
-			result, resultErr := NewKubeVersionFromJSValue(tt.value)
+			t.Parallel()
+
+			result, resultErr := settings.NewKubeVersionFromJSValue(tt.value)
 			assert.Equal(t, tt.expected, result)
 			assert.Equal(t, tt.expectedErr, resultErr)
 		})
