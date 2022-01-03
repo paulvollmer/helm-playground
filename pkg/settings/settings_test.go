@@ -3,7 +3,6 @@
 package settings_test
 
 import (
-	"errors"
 	"syscall/js"
 	"testing"
 
@@ -24,7 +23,7 @@ func TestNewKubeVersionFromJSValue(t *testing.T) {
 		{
 			testName:    "is undefined",
 			expected:    nil,
-			expectedErr: errors.New("value is undefined"),
+			expectedErr: settings.ErrorValueIsUndefined,
 		},
 		{
 			testName:    "ok",
@@ -36,7 +35,7 @@ func TestNewKubeVersionFromJSValue(t *testing.T) {
 			testName:    "is not type of string",
 			value:       js.ValueOf(map[string]interface{}{"version": 1}),
 			expected:    nil,
-			expectedErr: errors.New("version must be type of string"),
+			expectedErr: settings.ErrorVersionInvalidType,
 		},
 	}
 	for _, tt := range tests {

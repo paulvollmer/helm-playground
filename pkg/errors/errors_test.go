@@ -37,7 +37,7 @@ func TestHasYamlLinePrefix(t *testing.T) {
 		t.Run(tt.testName, func(t *testing.T) {
 			t.Parallel()
 
-			result := errors.HasYamlLinePrefix(goerrors.New(tt.input))
+			result := errors.HasYamlLinePrefix(goerrors.New(tt.input)) //nolint: goerr113
 			assert.Equal(t, result, tt.expectedResult, fmt.Sprintf("expect %v for string %q", tt.expectedResult, tt.input))
 		})
 	}
@@ -63,7 +63,7 @@ func TestYamlErrorGetLine(t *testing.T) {
 		t.Run(tt.testName, func(t *testing.T) {
 			t.Parallel()
 
-			result := errors.YamlErrorGetLine(goerrors.New(tt.input))
+			result := errors.YamlErrorGetLine(goerrors.New(tt.input)) //nolint: goerr113
 			assert.Equal(t, tt.expectedResult, result)
 		})
 	}
@@ -89,7 +89,7 @@ func TestYamlErrorGetMessage(t *testing.T) {
 		t.Run(tt.testName, func(t *testing.T) {
 			t.Parallel()
 
-			result := errors.YamlErrorGetMessage(goerrors.New(tt.input))
+			result := errors.YamlErrorGetMessage(goerrors.New(tt.input)) //nolint: goerr113
 			assert.Equal(t, tt.expectedResult, result)
 		})
 	}
