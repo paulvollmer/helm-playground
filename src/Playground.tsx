@@ -39,7 +39,7 @@ console.log(`git hash: ${version}`)
 
 const drawerWidth = 280
 
-const useStyles = makeStyles((t) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
