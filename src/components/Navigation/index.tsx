@@ -28,7 +28,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
   }
 
   const handleGithubRepo = () => {
-    window.open('http://github.com/paulvollmer/helm-playground')
+    window.open('https://github.com/paulvollmer/helm-playground')
   }
 
   const handleGithubIssueBug = () => {
