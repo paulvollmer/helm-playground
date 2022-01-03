@@ -12,7 +12,7 @@ export type HelmRenderReturn = {
 export type HelmRenderReturnError = {
   kind: string
   file: string
-  line: number
+  line?: number
   message: string
 }
 

@@ -1,6 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders RenderResult with error 1`] = `
+exports[`RenderResult render with result 1`] = `
+Array [
+  <h6
+    className="MuiTypography-root MuiTypography-subtitle1 css-10wpov9-MuiTypography-root"
+  >
+    Render Output
+  </h6>,
+  <div
+    id="editor"
+    style={
+      Object {
+        "height": "calc(100vh - 100px)",
+        "width": "100%",
+      }
+    }
+  />,
+]
+`;
+
+exports[`RenderResult renders with error 1`] = `
 <div>
   <h6
     className="MuiTypography-root MuiTypography-subtitle1 css-10wpov9-MuiTypography-root"
@@ -22,23 +41,4 @@ exports[`renders RenderResult with error 1`] = `
     Line: 1
   </p>
 </div>
-`;
-
-exports[`renders RenderResult with result 1`] = `
-Array [
-  <h6
-    className="MuiTypography-root MuiTypography-subtitle1 css-10wpov9-MuiTypography-root"
-  >
-    Render Output
-  </h6>,
-  <div
-    id="editor"
-    style={
-      Object {
-        "height": "calc(100vh - 100px)",
-        "width": "100%",
-      }
-    }
-  />,
-]
 `;
