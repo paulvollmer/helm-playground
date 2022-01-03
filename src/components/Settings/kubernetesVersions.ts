@@ -1,4 +1,4 @@
-const kubernetesVersions = [
+export const kubernetesVersions = [
   'v1.23.0',
   'v1.22.0',
   'v1.21.0',
@@ -25,4 +25,4 @@ const kubernetesVersions = [
   'v1.0.0',
 ]
 
-export default kubernetesVersions
+export const defaultKubernetesVersion = kubernetesVersions[0]
