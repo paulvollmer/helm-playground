@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders TreeItemLabel 1`] = `
+exports[`TreeItemLabel render 1`] = `
 <div
   onContextMenu={[Function]}
   style={

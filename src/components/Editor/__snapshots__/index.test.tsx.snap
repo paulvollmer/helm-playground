@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Editor 1`] = `
+exports[`Editor render 1`] = `
 <div
   id="editor"
   style={
