@@ -1,8 +1,11 @@
+//go:build js && wasm
+
 package main
 
 import (
 	"github.com/paulvollmer/helm-playground/pkg/errors"
 	"github.com/paulvollmer/helm-playground/pkg/render"
+	"github.com/paulvollmer/helm-playground/pkg/settings"
 	"syscall/js"
 )
 
@@ -29,10 +32,10 @@ func helmRender(this js.Value, p []js.Value) interface{} {
 	if err != nil {
 		return err
 	}
-	s, err := render.ParseInputSettings(p[3].String())
-	if err != nil {
-		return err
+	s, errSettings := settings.NewSettingsFromJSValue(p[3])
+	if errSettings != nil {
+		return errors.ReturnObjectErrorSettings(errSettings)
 	}
 
-	return render.Render(chartMetadata, inputTemplate, valuesInput, s)
+	return render.Render(chartMetadata, inputTemplate, valuesInput, *s)
 }

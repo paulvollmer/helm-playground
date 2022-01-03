@@ -39,7 +39,7 @@ func YamlErrorGetMessage(err error) string {
 			msg = strings.Join(tmp[2:], ":")
 		}
 	}
-	return msg
+	return strings.TrimSpace(msg)
 }
 
 func ReturnObjectErrorMissingArguments() map[string]interface{} {

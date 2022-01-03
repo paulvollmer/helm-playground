@@ -33,42 +33,42 @@ func TestHasYamlLinePrefix(t *testing.T) {
 	}
 }
 
-//func TestYamlErrorGetLine(t *testing.T) {
-//	tests := []struct {
-//		testName       string
-//		input          string
-//		expectedResult int
-//	}{
-//		{
-//			testName:       "1",
-//			input:          "yaml: line 1 test",
-//			expectedResult: 1,
-//		},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.testName, func(t *testing.T) {
-//			result := YamlErrorGetLine(errors.New(tt.input))
-//			assert.Equal(t, tt.expectedResult, result)
-//		})
-//	}
-//}
+func TestYamlErrorGetLine(t *testing.T) {
+	tests := []struct {
+		testName       string
+		input          string
+		expectedResult int
+	}{
+		{
+			testName:       "1",
+			input:          "yaml: line 1: test",
+			expectedResult: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.testName, func(t *testing.T) {
+			result := YamlErrorGetLine(errors.New(tt.input))
+			assert.Equal(t, tt.expectedResult, result)
+		})
+	}
+}
 
-//func TestYamlErrorGetMessage(t *testing.T) {
-//	tests := []struct {
-//		testName       string
-//		input          string
-//		expectedResult string
-//	}{
-//		{
-//			testName:       "1",
-//			input:          "yaml: line 1 test",
-//			expectedResult: "test",
-//		},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.testName, func(t *testing.T) {
-//			result := YamlErrorGetMessage(errors.New(tt.input))
-//			assert.Equal(t, tt.expectedResult, result)
-//		})
-//	}
-//}
+func TestYamlErrorGetMessage(t *testing.T) {
+	tests := []struct {
+		testName       string
+		input          string
+		expectedResult string
+	}{
+		{
+			testName:       "1",
+			input:          "yaml: line 1: test",
+			expectedResult: "test",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.testName, func(t *testing.T) {
+			result := YamlErrorGetMessage(errors.New(tt.input))
+			assert.Equal(t, tt.expectedResult, result)
+		})
+	}
+}

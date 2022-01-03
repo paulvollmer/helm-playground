@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package render
 
 import (
@@ -46,16 +48,7 @@ func ParseInputChartMetadata(i string) (*chart.Metadata, map[string]interface{})
 	return &chartMetadata, nil
 }
 
-func ParseInputSettings(i string) (settings.Settings, map[string]interface{}) {
-	s := settings.Settings{}
-	err := json.Unmarshal([]byte(i), &s)
-	if err != nil {
-		return s, errors.ReturnObjectErrorSettings(err)
-	}
-	return s, nil
-}
-
-func CreateChartValues(metadata *chart.Metadata, values InputValues, s settings.Settings) chartutil.Values {
+func createChartValues(metadata *chart.Metadata, values InputValues, s *settings.Settings) chartutil.Values {
 	return chartutil.Values{
 		"Values": values,
 		"Chart":  metadata,
@@ -95,7 +88,7 @@ func CreateChartValues(metadata *chart.Metadata, values InputValues, s settings.
 	}
 }
 
-func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput InputValues, s settings.Settings) map[string]interface{} {
+func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput InputValues, s *settings.Settings) map[string]interface{} {
 	chrt := &chart.Chart{
 		Metadata:  metadata,
 		Templates: templates,
@@ -106,7 +99,7 @@ func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput Input
 		Schema: []byte{},
 	}
 
-	values := CreateChartValues(metadata, valuesInput, s)
+	values := createChartValues(metadata, valuesInput, s)
 	d, err := engine.Render(chrt, values)
 	if err != nil {
 		return errors.ReturnObjectErrorRender(err)

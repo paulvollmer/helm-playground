@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package render
 
 import (
@@ -119,42 +121,6 @@ func TestParseInputChartMetadata(t *testing.T) {
 	}
 }
 
-func TestParseInputSettings(t *testing.T) {
-	tests := []struct {
-		testName    string
-		input       string
-		expected    settings.Settings
-		expectedErr map[string]interface{}
-	}{
-		{
-			testName:    "valid",
-			input:       `{"release": {"name": "test"}}`,
-			expected:    settings.Settings{Release: settings.Release{Name: "test"}},
-			expectedErr: nil,
-		},
-		{
-			testName: "invalid",
-			input:    "invalid",
-			expected: settings.Settings{},
-			expectedErr: map[string]interface{}{
-				"error": map[string]interface{}{
-					"file":    "",
-					"kind":    errors.ErrorKindSettings,
-					"line":    "",
-					"message": "invalid character 'i' looking for beginning of value",
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.testName, func(t *testing.T) {
-			result, resultErr := ParseInputSettings(tt.input)
-			assert.Equal(t, tt.expected, result)
-			assert.Equal(t, tt.expectedErr, resultErr)
-		})
-	}
-}
-
 func TestRender(t *testing.T) {
 	tests := []struct {
 		testName  string
@@ -194,7 +160,11 @@ func TestRender(t *testing.T) {
 
 	metadata := &chart.Metadata{Name: "test"}
 	values := InputValues{}
-	s := settings.Settings{}
+	s := &settings.Settings{
+		Release:     &settings.Release{},
+		KubeVersion: &settings.KubeVersion{},
+		HelmVersion: &settings.HelmVersion{},
+	}
 
 	for _, tt := range tests {
 		t.Run(tt.testName, func(t *testing.T) {
