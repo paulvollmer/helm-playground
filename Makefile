@@ -1,9 +1,12 @@
 all: test prebuild build
 
 test:
-	@ go test -cover ./pkg/errors
-	@ GOOS=js GOARCH=wasm go test -cover -exec="$(shell go env GOROOT)/misc/wasm/go_js_wasm_exec" ./pkg/render
-	@ GOOS=js GOARCH=wasm go test -cover -exec="$(shell go env GOROOT)/misc/wasm/go_js_wasm_exec" ./pkg/settings
+	@ GOOS=js GOARCH=wasm go test -cover -exec="$(shell go env GOROOT)/misc/wasm/go_js_wasm_exec" ./pkg/...
+
+lint:
+	@ GOOS=js GOARCH=wasm golangci-lint run -c ./.golangci.yaml ./pkg/...
+lint-fix:
+	@ GOOS=js GOARCH=wasm golangci-lint run -c ./.golangci.yaml --fix ./pkg/...
 
 prebuild: public/wasm_exec.js
 public/wasm_exec.js:

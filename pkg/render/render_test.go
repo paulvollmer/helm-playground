@@ -1,17 +1,21 @@
 //go:build js && wasm
 
-package render
+package render_test
 
 import (
-	"github.com/paulvollmer/helm-playground/pkg/errors"
-	"github.com/paulvollmer/helm-playground/pkg/settings"
-	"helm.sh/helm/v3/pkg/chart"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"helm.sh/helm/v3/pkg/chart"
+
+	"github.com/paulvollmer/helm-playground/pkg/errors"
+	"github.com/paulvollmer/helm-playground/pkg/render"
+	"github.com/paulvollmer/helm-playground/pkg/settings"
 )
 
 func TestParseInputTemplates(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName    string
 		input       string
@@ -41,8 +45,12 @@ func TestParseInputTemplates(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result, resultErr := ParseInputTemplates(tt.input)
+			t.Parallel()
+
+			result, resultErr := render.ParseInputTemplates(tt.input)
 			assert.Equal(t, tt.expected, result)
 			assert.Equal(t, tt.expectedErr, resultErr)
 		})
@@ -50,16 +58,18 @@ func TestParseInputTemplates(t *testing.T) {
 }
 
 func TestParseInputValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName    string
 		input       string
-		expected    InputValues
+		expected    render.InputValues
 		expectedErr map[string]interface{}
 	}{
 		{
 			testName:    "valid",
 			input:       `{"key": "value"}`,
-			expected:    InputValues{"key": "value"},
+			expected:    render.InputValues{"key": "value"},
 			expectedErr: nil,
 		},
 		{
@@ -77,8 +87,12 @@ func TestParseInputValues(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result, resultErr := ParseInputValues(tt.input)
+			t.Parallel()
+
+			result, resultErr := render.ParseInputValues(tt.input)
 			assert.Equal(t, tt.expected, result)
 			assert.Equal(t, tt.expectedErr, resultErr)
 		})
@@ -86,6 +100,8 @@ func TestParseInputValues(t *testing.T) {
 }
 
 func TestParseInputChartMetadata(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName    string
 		input       string
@@ -93,9 +109,39 @@ func TestParseInputChartMetadata(t *testing.T) {
 		expectedErr map[string]interface{}
 	}{
 		{
-			testName:    "valid",
-			input:       "name: test",
-			expected:    &chart.Metadata{Name: "test"},
+			testName: "valid",
+			input: `name: Test-Name
+home: Test-Home
+version: Test-Version
+description:  Test-Description
+icon:         Test-Icon
+apiversion:   "Test-APIVersion"
+condition:    "Test-Condition"
+tags:         "Test-Tags"
+appversion:   "Test-AppVersion"
+deprecated:   false
+kubeversion:  "Test-KubeVersion"
+type:         "Test-Type"
+`,
+			expected: &chart.Metadata{
+				Name:         "Test-Name",
+				Home:         "Test-Home",
+				Sources:      nil,
+				Version:      "Test-Version",
+				Description:  "Test-Description",
+				Keywords:     nil,
+				Maintainers:  nil,
+				Icon:         "Test-Icon",
+				APIVersion:   "Test-APIVersion",
+				Condition:    "Test-Condition",
+				Tags:         "Test-Tags",
+				AppVersion:   "Test-AppVersion",
+				Deprecated:   false,
+				Annotations:  nil,
+				KubeVersion:  "Test-KubeVersion",
+				Dependencies: nil,
+				Type:         "Test-Type",
+			},
 			expectedErr: nil,
 		},
 		{
@@ -113,8 +159,11 @@ func TestParseInputChartMetadata(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result, resultErr := ParseInputChartMetadata(tt.input)
+			t.Parallel()
+			result, resultErr := render.ParseInputChartMetadata(tt.input)
 			assert.Equal(t, tt.expected, result)
 			assert.Equal(t, tt.expectedErr, resultErr)
 		})
@@ -122,6 +171,8 @@ func TestParseInputChartMetadata(t *testing.T) {
 }
 
 func TestRender(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		testName  string
 		templates []*chart.File
@@ -149,7 +200,7 @@ func TestRender(t *testing.T) {
 			},
 			expected: map[string]interface{}{
 				"error": map[string]interface{}{
-					"file":    "test/sample",
+					"file":    "Test-Name/sample",
 					"kind":    errors.ErrorKindRender,
 					"line":    1,
 					"message": "unclosed action",
@@ -158,17 +209,55 @@ func TestRender(t *testing.T) {
 		},
 	}
 
-	metadata := &chart.Metadata{Name: "test"}
-	values := InputValues{}
-	s := &settings.Settings{
-		Release:     &settings.Release{},
-		KubeVersion: &settings.KubeVersion{},
-		HelmVersion: &settings.HelmVersion{},
+	metadata := &chart.Metadata{
+		Name:         "Test-Name",
+		Home:         "Test-Home",
+		Sources:      nil,
+		Version:      "Test-Version",
+		Description:  "Test-Description",
+		Keywords:     nil,
+		Maintainers:  nil,
+		Icon:         "Test-Icon",
+		APIVersion:   "Test-APIVersion",
+		Condition:    "Test-Condition",
+		Tags:         "Test-Tags",
+		AppVersion:   "Test-AppVersion",
+		Deprecated:   false,
+		Annotations:  nil,
+		KubeVersion:  "Test-KubeVersion",
+		Dependencies: nil,
+		Type:         "Test-Type",
+	}
+	values := render.InputValues{
+		"test": "value",
+	}
+	testSettings := &settings.Settings{
+		Release: &settings.Release{
+			Name:      "Test-Name",
+			Namespace: "Test-Namespace",
+			Revision:  "Test-Revision",
+			IsUpgrade: "Test-IsUpgrade",
+			IsInstall: "Test-IsInstall",
+			Service:   "Test-Service",
+		},
+		KubeVersion: &settings.KubeVersion{
+			Version: "Test-Version",
+		},
+		HelmVersion: &settings.HelmVersion{
+			Version:      "Test-Version",
+			GitCommit:    "Test-GitCommit",
+			GitTreeState: "Test-GitTreeState",
+			GoVersion:    "Test-GoVersion",
+		},
 	}
 
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.testName, func(t *testing.T) {
-			result := Render(metadata, tt.templates, values, s)
+			t.Parallel()
+
+			result := render.Render(metadata, tt.templates, values, testSettings)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
