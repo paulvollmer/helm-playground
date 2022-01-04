@@ -12,25 +12,23 @@ export type RenderResultProps = {
 /**
  * call the helmRender function and dispay the result
  */
-const RenderResult = (props: RenderResultProps): JSX.Element => {
+function RenderResult(props: RenderResultProps): JSX.Element {
+  if (props.data.error) {
+    return <RenderError error={props.data.error} />
+  }
+
   return (
     <>
-      {props.data.error ? (
-        <RenderError error={props.data.error} />
-      ) : (
-        <>
-          <Typography variant="subtitle1">Render Output</Typography>
-          <AceEditor
-            mode="yaml"
-            theme="github"
-            name="editor"
-            width="100%"
-            height="calc(100vh - 100px)"
-            value={props.data.result}
-            editorProps={{ $blockScrolling: true }}
-          />
-        </>
-      )}
+      <Typography variant="subtitle1">Render Output</Typography>
+      <AceEditor
+        mode="yaml"
+        theme="github"
+        name="editor"
+        width="100%"
+        height="calc(100vh - 100px)"
+        value={props.data.result}
+        editorProps={{ $blockScrolling: true }}
+      />
     </>
   )
 }

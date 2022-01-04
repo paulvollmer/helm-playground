@@ -10,13 +10,15 @@ declare module '@mui/styles/defaultTheme' {
 
 const theme = createTheme()
 
-const App = (): JSX.Element => (
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Playground />
-    </ThemeProvider>
-  </StyledEngineProvider>
-)
+function App(): JSX.Element {
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Playground />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  )
+}
 
 export default App

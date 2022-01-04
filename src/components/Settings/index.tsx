@@ -40,7 +40,7 @@ export type SettingsProps = {
   onChangeHelmGoVersion: (v: string) => void
 }
 
-const Settings = (props: SettingsProps): JSX.Element => {
+function Settings(props: SettingsProps): JSX.Element {
   const classes = useStyles()
 
   return (

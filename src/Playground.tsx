@@ -53,7 +53,7 @@ initialTemplateSources[notesFilename] = notesContent
 initialTemplateSources[serviceFilename] = serviceContent
 initialTemplateSources[serviceaccountFilename] = serviceaccountContent
 
-const Playground = (): JSX.Element => {
+function Playground(): JSX.Element {
   const classes = useStyles()
 
   const [wasmLoaded, setWasmLoaded] = useState<boolean>(false)
@@ -362,6 +362,7 @@ const Playground = (): JSX.Element => {
       <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
         <Box sx={{ pt: 10, pb: 8 }}>
           {wasmLoaded ? (
+            // eslint-disable-next-line react/jsx-no-useless-fragment
             <>
               {wasmError !== '' ? (
                 <Container maxWidth="md" disableGutters style={{ textAlign: 'center' }}>

@@ -15,28 +15,26 @@ export type FileViewerProps = {
   selected: string | undefined
 }
 
-const FileViewer = (props: FileViewerProps): JSX.Element => {
+function FileViewer(props: FileViewerProps): JSX.Element {
   return (
-    <>
-      <TreeView
-        className={props.className}
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-        defaultExpanded={['templates']}
-        onNodeSelect={props.onNodeSelect}
-        selected={props.selected}
-      >
-        <TreeItem nodeId={chartFilename} label={chartFilename} />
-        <TreeItem nodeId={valuesFilename} label={valuesFilename} />
-        <TreeItem nodeId={helmignoreFilename} label={helmignoreFilename} />
-        <TreeItem nodeId="templates" label="templates">
-          {Object.keys(props.sources).map((filename) => {
-            return <TreeItem key={filename} nodeId={filename} label={<TreeItemLabel onDelete={props.onDelete} title={filename} />} />
-          })}
-          <TreeItem nodeId="__ADD__" label="+" />
-        </TreeItem>
-      </TreeView>
-    </>
+    <TreeView
+      className={props.className}
+      defaultCollapseIcon={<ExpandMoreIcon />}
+      defaultExpandIcon={<ChevronRightIcon />}
+      defaultExpanded={['templates']}
+      onNodeSelect={props.onNodeSelect}
+      selected={props.selected}
+    >
+      <TreeItem nodeId={chartFilename} label={chartFilename} />
+      <TreeItem nodeId={valuesFilename} label={valuesFilename} />
+      <TreeItem nodeId={helmignoreFilename} label={helmignoreFilename} />
+      <TreeItem nodeId="templates" label="templates">
+        {Object.keys(props.sources).map((filename) => {
+          return <TreeItem key={filename} nodeId={filename} label={<TreeItemLabel onDelete={props.onDelete} title={filename} />} />
+        })}
+        <TreeItem nodeId="__ADD__" label="+" />
+      </TreeItem>
+    </TreeView>
   )
 }
 export default FileViewer
