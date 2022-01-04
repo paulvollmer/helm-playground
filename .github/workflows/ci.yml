@@ -22,6 +22,11 @@ jobs:
       - name: Prebuild
         run: make prebuild
 
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.43
+
       - name: Build
         run: make build
 
