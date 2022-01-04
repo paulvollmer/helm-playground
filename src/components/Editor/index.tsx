@@ -185,7 +185,7 @@ function Editor(props: EditorProps): JSX.Element {
       }}
       value={props.value}
       width="100%"
-      height="calc(100vh - 100px)"
+      height="calc(100vh - 110px)"
     />
   )
 }

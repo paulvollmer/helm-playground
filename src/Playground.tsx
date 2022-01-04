@@ -370,7 +370,7 @@ function Playground(): JSX.Element {
                 </Container>
               ) : (
                 <Container maxWidth="xl" disableGutters>
-                  <Grid container spacing={0}>
+                  <Grid container spacing={0} style={{height:"calc(100vh - 150px)"}}>
                     <Grid item xs={6}>
                       <Typography variant="subtitle1">
                         <input
