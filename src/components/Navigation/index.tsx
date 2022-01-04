@@ -15,7 +15,7 @@ export type NavigationProps = {
   handleExport: () => void
 }
 
-const Navigation = (props: NavigationProps): JSX.Element => {
+function Navigation(props: NavigationProps): JSX.Element {
   const [anchorElGithubMenu, setAnchorElGithubMenu] = React.useState<null | HTMLElement>(null)
   const openGithubMenu = Boolean(anchorElGithubMenu)
 

@@ -6,7 +6,7 @@ export type RenderErrorProps = {
   error: HelmRenderReturnError
 }
 
-export const RenderError = (props: RenderErrorProps): JSX.Element => {
+export function RenderError(props: RenderErrorProps): JSX.Element {
   return (
     <div>
       <Typography variant="subtitle1">Error Kind: {props.error.kind}</Typography>

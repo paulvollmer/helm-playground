@@ -7,7 +7,7 @@ export type TreeItemLabelProps = {
   title: string
 }
 
-const TreeItemLabel = (props: TreeItemLabelProps): JSX.Element => {
+function TreeItemLabel(props: TreeItemLabelProps): JSX.Element {
   const [contextMenu, setContextMenu] = React.useState<{
     mouseX: number
     mouseY: number

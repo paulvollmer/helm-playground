@@ -140,7 +140,7 @@ addCompleter({
 })
 
 // @ts-ignore
-const Editor = (props: EditorProps): JSX.Element => {
+function Editor(props: EditorProps): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [annotations, setAnnotations] = useState([])
   const [editor, setEditor] = useState()
