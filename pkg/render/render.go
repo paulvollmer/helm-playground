@@ -33,24 +33,28 @@ func ParseInputTemplates(i string) ([]*chart.File, map[string]interface{}) {
 type InputValues map[string]interface{}
 
 func ParseInputValues(i string) (InputValues, map[string]interface{}) {
-	valuesInput := make(InputValues, 0)
+	valuesInput := make(InputValues)
+
 	err := yaml.Unmarshal([]byte(i), &valuesInput)
 	if err != nil {
 		return nil, errors.ReturnObjectErrorYaml(err)
 	}
+
 	return valuesInput, nil
 }
 
 func ParseInputChartMetadata(i string) (*chart.Metadata, map[string]interface{}) {
 	var chartMetadata chart.Metadata
+
 	err := yaml.Unmarshal([]byte(i), &chartMetadata)
 	if err != nil {
 		return nil, errors.ReturnObjectErrorChartYaml(err)
 	}
+
 	return &chartMetadata, nil
 }
 
-func createChartValues(metadata *chart.Metadata, values InputValues, s *settings.Settings) chartutil.Values {
+func createChartValues(metadata *chart.Metadata, values InputValues, stng *settings.Settings) chartutil.Values {
 	return chartutil.Values{
 		"Values": values,
 		"Chart":  metadata,
@@ -63,24 +67,24 @@ func createChartValues(metadata *chart.Metadata, values InputValues, s *settings
 			"AsConfig":  "",
 		},
 		"Release": map[string]interface{}{
-			"Name":      s.Release.Name,
-			"Namespace": s.Release.Namespace,
-			"IsUpgrade": s.Release.IsUpgrade,
-			"IsInstall": s.Release.IsInstall,
-			"Revision":  s.Release.Revision,
-			"Service":   s.Release.Service,
+			"Name":      stng.Release.Name,
+			"Namespace": stng.Release.Namespace,
+			"IsUpgrade": stng.Release.IsUpgrade,
+			"IsInstall": stng.Release.IsInstall,
+			"Revision":  stng.Release.Revision,
+			"Service":   stng.Release.Service,
 		},
 		"Capabilities": map[string]interface{}{
 			"KubeVersion": map[string]interface{}{
-				"Version": s.KubeVersion.Version,
-				// "Major":   s.KubeVersion.Major,
-				// "Minor":   s.KubeVersion.Minor,
+				"Version": stng.KubeVersion.Version,
+				// "Major":   stng.KubeVersion.Major,
+				// "Minor":   stng.KubeVersion.Minor,
 			},
 			"HelmVersion": map[string]interface{}{
-				"Version":      s.HelmVersion.Version,
-				"GitCommit":    s.HelmVersion.GitCommit,
-				"GitTreeState": s.HelmVersion.GitTreeState,
-				"GoVersion":    s.HelmVersion.GoVersion,
+				"Version":      stng.HelmVersion.Version,
+				"GitCommit":    stng.HelmVersion.GitCommit,
+				"GitTreeState": stng.HelmVersion.GitTreeState,
+				"GoVersion":    stng.HelmVersion.GoVersion,
 			},
 			// "Template": map[string]interface{}{
 			// 	"Name":     "",
@@ -90,7 +94,12 @@ func createChartValues(metadata *chart.Metadata, values InputValues, s *settings
 	}
 }
 
-func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput InputValues, s *settings.Settings) map[string]interface{} {
+func Render(
+	metadata *chart.Metadata,
+	templates []*chart.File,
+	valuesInput InputValues,
+	stng *settings.Settings,
+) map[string]interface{} {
 	chrt := &chart.Chart{
 		Raw:       nil,
 		Metadata:  metadata,
@@ -104,14 +113,15 @@ func Render(metadata *chart.Metadata, templates []*chart.File, valuesInput Input
 		Files:  nil,
 	}
 
-	values := createChartValues(metadata, valuesInput, s)
-	d, err := engine.Render(chrt, values)
+	values := createChartValues(metadata, valuesInput, stng)
+
+	renderedResult, err := engine.Render(chrt, values)
 	if err != nil {
 		return errors.ReturnObjectErrorRender(err)
 	}
 
 	result := ""
-	for _, v := range d {
+	for _, v := range renderedResult {
 		result += v
 	}
 

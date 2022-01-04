@@ -23,7 +23,7 @@ func TestNewKubeVersionFromJSValue(t *testing.T) {
 		{
 			testName:    "is undefined",
 			expected:    nil,
-			expectedErr: settings.ErrorValueIsUndefined,
+			expectedErr: settings.ErrValueIsUndefined,
 		},
 		{
 			testName:    "ok",
@@ -35,7 +35,7 @@ func TestNewKubeVersionFromJSValue(t *testing.T) {
 			testName:    "is not type of string",
 			value:       js.ValueOf(map[string]interface{}{"version": 1}),
 			expected:    nil,
-			expectedErr: settings.ErrorVersionInvalidType,
+			expectedErr: settings.ErrVersionInvalidType,
 		},
 	}
 	for _, tt := range tests {

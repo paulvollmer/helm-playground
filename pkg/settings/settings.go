@@ -8,21 +8,21 @@ import (
 )
 
 var (
-	ErrorValueIsUndefined        = errors.New("value is undefined")
-	ErrorValueMustBeObject       = errors.New("value must be type of object")
-	ErrorReleaseInvalidType      = errors.New("release must be type of object")
-	ErrorKubeVersionInvalidType  = errors.New("kubeVersion must be type of object")
-	ErrorHelmVersionInvalidType  = errors.New("helmVersion must be type of object")
-	ErrorNameInvalidType         = errors.New("name must be type of string")
-	ErrorNamespaceInvalidType    = errors.New("namespace must be type of string")
-	ErrorVersionInvalidType      = errors.New("version must be type of string")
-	ErrorGoVersionInvalidType    = errors.New("goVersion must be type of string")
-	ErrorGitTreeStateInvalidType = errors.New("gitTreeState must be type of string")
-	ErrorGitCommitInvalidType    = errors.New("gitCommit must be type of string")
-	ErrorRevisionInvalidType     = errors.New("revision must be type of string")
-	ErrorIsUpgradeInvalidType    = errors.New("isUpgrade must be type of string")
-	ErrorIsInstallInvalidType    = errors.New("isInstall must be type of string")
-	ErrorServiceInvalidType      = errors.New("service must be type of string")
+	ErrValueIsUndefined        = errors.New("value is undefined")
+	ErrValueMustBeObject       = errors.New("value must be type of object")
+	ErrReleaseInvalidType      = errors.New("release must be type of object")
+	ErrKubeVersionInvalidType  = errors.New("kubeVersion must be type of object")
+	ErrHelmVersionInvalidType  = errors.New("helmVersion must be type of object")
+	ErrNameInvalidType         = errors.New("name must be type of string")
+	ErrNamespaceInvalidType    = errors.New("namespace must be type of string")
+	ErrVersionInvalidType      = errors.New("version must be type of string")
+	ErrGoVersionInvalidType    = errors.New("goVersion must be type of string")
+	ErrGitTreeStateInvalidType = errors.New("gitTreeState must be type of string")
+	ErrGitCommitInvalidType    = errors.New("gitCommit must be type of string")
+	ErrRevisionInvalidType     = errors.New("revision must be type of string")
+	ErrIsUpgradeInvalidType    = errors.New("isUpgrade must be type of string")
+	ErrIsInstallInvalidType    = errors.New("isInstall must be type of string")
+	ErrServiceInvalidType      = errors.New("service must be type of string")
 )
 
 type Settings struct {
@@ -33,44 +33,48 @@ type Settings struct {
 
 func NewSettingsFromJSValue(value js.Value) (*Settings, error) {
 	if !value.Truthy() {
-		return nil, ErrorValueIsUndefined
-	}
-	if value.Type() != js.TypeObject {
-		return nil, ErrorValueMustBeObject
+		return nil, ErrValueIsUndefined
 	}
 
-	s := new(Settings)
+	if value.Type() != js.TypeObject {
+		return nil, ErrValueMustBeObject
+	}
+
+	stng := new(Settings)
 
 	var err error
 
 	releaseValue := value.Get("release")
 	if releaseValue.Type() != js.TypeObject {
-		return nil, ErrorReleaseInvalidType
+		return nil, ErrReleaseInvalidType
 	}
-	s.Release, err = NewReleaseFromJSValue(releaseValue)
+
+	stng.Release, err = NewReleaseFromJSValue(releaseValue)
 	if err != nil {
 		return nil, err
 	}
 
 	kubeVersionValue := value.Get("kubeVersion")
 	if kubeVersionValue.Type() != js.TypeObject {
-		return nil, ErrorKubeVersionInvalidType
+		return nil, ErrKubeVersionInvalidType
 	}
-	s.KubeVersion, err = NewKubeVersionFromJSValue(kubeVersionValue)
+
+	stng.KubeVersion, err = NewKubeVersionFromJSValue(kubeVersionValue)
 	if err != nil {
 		return nil, err
 	}
 
 	helmVersionValue := value.Get("helmVersion")
 	if helmVersionValue.Type() != js.TypeObject {
-		return nil, ErrorHelmVersionInvalidType
+		return nil, ErrHelmVersionInvalidType
 	}
-	s.HelmVersion, err = NewHelmVersionFromJSValue(helmVersionValue)
+
+	stng.HelmVersion, err = NewHelmVersionFromJSValue(helmVersionValue)
 	if err != nil {
 		return nil, err
 	}
 
-	return s, nil
+	return stng, nil
 }
 
 type Release struct {
@@ -84,42 +88,43 @@ type Release struct {
 
 func NewReleaseFromJSValue(value js.Value) (*Release, error) {
 	if !value.Truthy() {
-		return nil, ErrorValueIsUndefined
+		return nil, ErrValueIsUndefined
 	}
+
 	if value.Type() != js.TypeObject {
-		return nil, ErrorValueMustBeObject
+		return nil, ErrValueMustBeObject
+	}
+
+	if value.Get("name").Type() != js.TypeString {
+		return nil, ErrNameInvalidType
+	}
+
+	if value.Get("namespace").Type() != js.TypeString {
+		return nil, ErrNamespaceInvalidType
+	}
+
+	if value.Get("revision").Type() != js.TypeString {
+		return nil, ErrRevisionInvalidType
+	}
+
+	if value.Get("isUpgrade").Type() != js.TypeString {
+		return nil, ErrIsUpgradeInvalidType
+	}
+
+	if value.Get("isInstall").Type() != js.TypeString {
+		return nil, ErrIsInstallInvalidType
+	}
+
+	if value.Get("service").Type() != js.TypeString {
+		return nil, ErrServiceInvalidType
 	}
 
 	release := new(Release)
-
-	if value.Get("name").Type() != js.TypeString {
-		return nil, ErrorNameInvalidType
-	}
 	release.Name = value.Get("name").String()
-
-	if value.Get("namespace").Type() != js.TypeString {
-		return nil, ErrorNamespaceInvalidType
-	}
 	release.Namespace = value.Get("namespace").String()
-
-	if value.Get("revision").Type() != js.TypeString {
-		return nil, ErrorRevisionInvalidType
-	}
 	release.Revision = value.Get("revision").String()
-
-	if value.Get("isUpgrade").Type() != js.TypeString {
-		return nil, ErrorIsUpgradeInvalidType
-	}
 	release.IsUpgrade = value.Get("isUpgrade").String()
-
-	if value.Get("isInstall").Type() != js.TypeString {
-		return nil, ErrorIsInstallInvalidType
-	}
 	release.IsInstall = value.Get("isInstall").String()
-
-	if value.Get("service").Type() != js.TypeString {
-		return nil, ErrorServiceInvalidType
-	}
 	release.Service = value.Get("service").String()
 
 	return release, nil
@@ -133,27 +138,28 @@ type KubeVersion struct {
 
 func NewKubeVersionFromJSValue(value js.Value) (*KubeVersion, error) {
 	if !value.Truthy() {
-		return nil, ErrorValueIsUndefined
-	}
-	if value.Type() != js.TypeObject {
-		return nil, ErrorValueMustBeObject
+		return nil, ErrValueIsUndefined
 	}
 
-	kubeVersion := new(KubeVersion)
+	if value.Type() != js.TypeObject {
+		return nil, ErrValueMustBeObject
+	}
 
 	if value.Get("version").Type() != js.TypeString {
-		return nil, ErrorVersionInvalidType
+		return nil, ErrVersionInvalidType
 	}
-	kubeVersion.Version = value.Get("version").String()
 
 	// if value.Get("major").Type() != js.TypeString {
 	// 	return nil, errors.New("major must be type of string")
 	// }
-	// kubeVersion.Major = value.Get("major").String()
-	//
+
 	// if value.Get("minor").Type() != js.TypeString {
 	// 	return nil, errors.New("minor must be type of string")
 	// }
+
+	kubeVersion := new(KubeVersion)
+	kubeVersion.Version = value.Get("version").String()
+	// kubeVersion.Major = value.Get("major").String()
 	// kubeVersion.Minor = value.Get("minor").String()
 
 	return kubeVersion, nil
@@ -168,32 +174,33 @@ type HelmVersion struct {
 
 func NewHelmVersionFromJSValue(value js.Value) (*HelmVersion, error) {
 	if !value.Truthy() {
-		return nil, ErrorValueIsUndefined
+		return nil, ErrValueIsUndefined
 	}
+
 	if value.Type() != js.TypeObject {
-		return nil, ErrorValueMustBeObject
+		return nil, ErrValueMustBeObject
+	}
+
+	if value.Get("version").Type() != js.TypeString {
+		return nil, ErrVersionInvalidType
+	}
+
+	if value.Get("gitCommit").Type() != js.TypeString {
+		return nil, ErrGitCommitInvalidType
+	}
+
+	if value.Get("gitTreeState").Type() != js.TypeString {
+		return nil, ErrGitTreeStateInvalidType
+	}
+
+	if value.Get("goVersion").Type() != js.TypeString {
+		return nil, ErrGoVersionInvalidType
 	}
 
 	helmVersion := new(HelmVersion)
-
-	if value.Get("version").Type() != js.TypeString {
-		return nil, ErrorVersionInvalidType
-	}
 	helmVersion.Version = value.Get("version").String()
-
-	if value.Get("gitCommit").Type() != js.TypeString {
-		return nil, ErrorGitCommitInvalidType
-	}
 	helmVersion.GitCommit = value.Get("gitCommit").String()
-
-	if value.Get("gitTreeState").Type() != js.TypeString {
-		return nil, ErrorGitTreeStateInvalidType
-	}
 	helmVersion.GitTreeState = value.Get("gitTreeState").String()
-
-	if value.Get("goVersion").Type() != js.TypeString {
-		return nil, ErrorGoVersionInvalidType
-	}
 	helmVersion.GoVersion = value.Get("goVersion").String()
 
 	return helmVersion, nil

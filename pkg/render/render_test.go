@@ -231,7 +231,7 @@ func TestRender(t *testing.T) {
 	values := render.InputValues{
 		"test": "value",
 	}
-	s := &settings.Settings{
+	testSettings := &settings.Settings{
 		Release: &settings.Release{
 			Name:      "Test-Name",
 			Namespace: "Test-Namespace",
@@ -257,7 +257,7 @@ func TestRender(t *testing.T) {
 		t.Run(tt.testName, func(t *testing.T) {
 			t.Parallel()
 
-			result := render.Render(metadata, tt.templates, values, s)
+			result := render.Render(metadata, tt.templates, values, testSettings)
 			assert.Equal(t, tt.expected, result)
 		})
 	}

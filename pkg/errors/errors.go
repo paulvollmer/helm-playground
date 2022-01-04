@@ -21,6 +21,7 @@ func HasYamlLinePrefix(err error) bool {
 
 func YamlErrorGetLine(err error) int {
 	line := -1
+
 	if HasYamlLinePrefix(err) {
 		split := strings.Split(strings.TrimPrefix(err.Error(), "yaml: line "), ":")
 		if len(split) > 0 {
@@ -30,17 +31,20 @@ func YamlErrorGetLine(err error) int {
 			}
 		}
 	}
+
 	return line
 }
 
 func YamlErrorGetMessage(err error) string {
 	msg := err.Error()
+
 	if HasYamlLinePrefix(err) {
 		tmp := strings.Split(err.Error(), ":")
-		if len(tmp) > 2 {
+		if len(tmp) > 2 { //nolint: gomnd
 			msg = strings.Join(tmp[2:], ":")
 		}
 	}
+
 	return strings.TrimSpace(msg)
 }
 
@@ -100,6 +104,7 @@ func ReturnObjectErrorSettings(err error) map[string]interface{} {
 
 func ReturnObjectErrorRender(err error) map[string]interface{} {
 	file, line, message := parseRenderError(err)
+
 	return map[string]interface{}{
 		"error": map[string]interface{}{
 			"kind":    ErrorKindRender,
@@ -112,20 +117,25 @@ func ReturnObjectErrorRender(err error) map[string]interface{} {
 
 func parseRenderError(renderErr error) (file string, line int, message string) {
 	r := regexp.MustCompile(`parse error at \((.+):(\d+)\): (.+)`)
+
 	res := r.FindAllStringSubmatch(renderErr.Error(), -1)
 	if len(res) != 1 {
 		return
 	}
-	if len(res[0]) != 4 {
+
+	if len(res[0]) != 4 { //nolint: gomnd
 		return
 	}
 
 	file = res[0][1]
+
 	var err error
+
 	line, err = strconv.Atoi(res[0][2])
 	if err != nil {
 		line = 0
 	}
+
 	message = res[0][3]
 
 	return
