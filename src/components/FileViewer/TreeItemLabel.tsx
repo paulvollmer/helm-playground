@@ -13,7 +13,7 @@ function TreeItemLabel(props: TreeItemLabelProps): JSX.Element {
     mouseY: number
   } | null>(null)
 
-  const handleContextMenu = (event: any) => {
+  const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     setContextMenu(
       contextMenu === null

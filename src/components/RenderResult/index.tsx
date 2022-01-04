@@ -25,7 +25,8 @@ function RenderResult(props: RenderResultProps): JSX.Element {
         theme="github"
         name="editor"
         width="100%"
-        height="calc(100vh - 100px)"
+        height="calc(100vh - 110px)"
+        readOnly
         value={props.data.result}
         editorProps={{ $blockScrolling: true }}
       />

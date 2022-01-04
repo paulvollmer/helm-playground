@@ -1,0 +1,111 @@
+import { Ace } from 'ace-builds'
+
+const autocompleteChartYaml: Ace.Completion[] = [
+  {
+    name: 'apiVersion',
+    value: 'apiVersion: ',
+    caption: 'apiVersion',
+    meta: 'The chart API version (required)',
+    score: 10,
+  },
+  {
+    name: 'name',
+    value: 'name: ',
+    caption: 'name',
+    meta: 'Chart',
+    score: 10,
+  },
+  {
+    name: 'version',
+    value: 'version: ',
+    caption: 'version',
+    meta: 'A SemVer 2 version (required)',
+    score: 10,
+  },
+  {
+    name: 'kubeVersion',
+    value: 'kubeVersion: ',
+    caption: 'kubeVersion',
+    meta: 'A SemVer range of compatible Kubernetes versions (optional)',
+    score: 10,
+  },
+  {
+    name: 'description',
+    value: 'description: ',
+    caption: 'description',
+    meta: 'A single-sentence description of this project (optional)',
+    score: 10,
+  },
+  {
+    name: 'type',
+    value: 'type: ',
+    caption: 'type',
+    meta: 'The type of the chart (optional)',
+    score: 10,
+  },
+  {
+    name: 'keywords',
+    value: 'keywords:\n  - ',
+    caption: 'keywords',
+    meta: 'A list of keywords about this project (optional)',
+    score: 10,
+  },
+  {
+    name: 'home',
+    value: 'home: ',
+    caption: 'home',
+    meta: 'The URL of this projects home page (optional)',
+    score: 10,
+  },
+  {
+    name: 'sources',
+    value: 'sources:\n  - ',
+    caption: 'sources',
+    meta: 'A list of URLs to source code for this project (optional)',
+    score: 10,
+  },
+  {
+    name: 'dependencies',
+    value: 'dependencies:\n  - name: \n    version: ',
+    caption: 'dependencies',
+    meta: 'A list of the chart requirements (optional)',
+    score: 10,
+  },
+  {
+    name: 'maintainers',
+    value: 'maintainers:\n  - name: \n    email: \n    url: ',
+    caption: 'maintainers',
+    meta: '',
+    score: 10,
+  },
+  {
+    name: 'icon',
+    value: 'icon: ',
+    caption: 'icon',
+    meta: 'A URL to an SVG or PNG image to be used as an icon (optional).',
+    score: 10,
+  },
+  {
+    name: 'appVersion',
+    value: 'appVersion: ',
+    caption: 'appVersion',
+    meta: "The version of the app that this contains (optional). Needn't be SemVer. Quotes recommended.",
+    score: 10,
+  },
+  {
+    name: 'deprecated',
+    value: 'deprecated: true',
+    caption: 'deprecated',
+    meta: 'Whether this chart is deprecated (optional, boolean)',
+    score: 10,
+  },
+  {
+    name: 'annotations',
+    value: 'annotations:\n  key: value',
+    caption: 'annotations',
+    meta: '',
+    score: 10,
+  },
+]
+
+export default autocompleteChartYaml
