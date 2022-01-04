@@ -6,11 +6,12 @@ import { chartFilename } from '../../defaults/chart_yaml'
 import { valuesFilename } from '../../defaults/values_yaml'
 import { helmignoreFilename } from '../../defaults/helmignore'
 import TreeItemLabel from './TreeItemLabel'
+import { Sources } from '../../types'
 
 export type FileViewerProps = {
   className: string
   onNodeSelect?: (event: React.ChangeEvent<{}>, nodeIds: string) => void // eslint-disable-line 
-  sources: any
+  sources: Sources
   onDelete: (event: React.ChangeEvent<{}>, src: string) => void // eslint-disable-line
   selected: string | undefined
 }

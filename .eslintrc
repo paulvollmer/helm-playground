@@ -49,6 +49,6 @@
           "tsx": "never"
         }
       ],
-      "prettier/prettier": "warn"
+      "prettier/prettier": "error"
     }
   }

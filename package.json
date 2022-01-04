@@ -33,8 +33,13 @@
     "build:wasm-exec": "cat $(go env GOROOT)/misc/wasm/wasm_exec.js > public/wasm_exec.js",
     "build:wasm": "cd pkg/render && GOOS=js GOARCH=wasm go build  -o ../../public/main-big.wasm",
     "test": "react-scripts test",
-    "lint": "eslint \"**/*.{ts,tsx,js,jsx}\"",
-    "lint:fix": "eslint \"**/*.{ts,tsx,js,jsx}\" --quiet --fix"
+    "lint": "npx eslint \"**/*.{ts,tsx,js,jsx}\"",
+    "lint:fix": "npm run lint -- --quiet --fix",
+    "check-types": "tsc --noEmit"
+  },
+  "author": {
+    "name": "Paul Vollmer",
+    "url": "https://github.com/paulvollmer"
   },
   "homepage": "https://paulvollmer.net/helm-playground",
   "browserslist": {
@@ -50,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@types/golang-wasm-exec": "^1.15.0",
     "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.0.0",

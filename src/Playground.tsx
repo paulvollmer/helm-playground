@@ -34,7 +34,10 @@ import { HelmRenderReturn, SettingsData, Sources } from './types'
 import { version, wasmSize } from './envvars'
 import { defaultHelmGitCommit, defaultHelmGitTreeState, defaultHelmGoVersion, defaultHelmVersion } from './defaults/helm'
 import { defaultKubernetesVersion } from './components/Settings/kubernetesVersions'
+import { extensionIsTpl, getAllTplFilenamesFromList, getFileExtension } from './utils/utils'
 
+// log the version to console
+// eslint-disable-next-line no-console
 console.log(`git hash: ${version}`)
 
 const drawerWidth = 280
@@ -66,9 +69,10 @@ function Playground(): JSX.Element {
   const [sources, setSources] = useState(initialTemplateSources)
 
   const [selected, setSelected] = useState(chartFilename)
+  const [prevSelectedTemplate, setPrevSelectedTemplate] = useState(deploymentFilename)
   const [editor, setEditor] = useState(chartContent)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [customAnnotations, setCustomAnnotations] = useState({})
+  const [customAnnotations, setCustomAnnotations] = useState<Ace.Annotation>({ text: '', type: '' })
   const [aceEditor] = useState<Ace.Editor>()
   const [aceEditorError, setAceEditorError] = useState({ row: 0, text: '' })
   const [fileRename, setfileRename] = useState('')
@@ -126,11 +130,9 @@ function Playground(): JSX.Element {
         return new Blob([res.data]).arrayBuffer()
       })
       .then((bin) => {
-        // @ts-ignore
         const go = new Go()
         WebAssembly.instantiate(bin, go.importObject)
           .then((result) => {
-            // @ts-ignore
             go.run(result.instance)
             // @ts-ignore
             window.helmRender = helmRender
@@ -145,14 +147,27 @@ function Playground(): JSX.Element {
 
   useEffect(() => {
     if (wasmLoaded) {
+      const ext = getFileExtension(selected)
+
       const filesToRender: Sources = {}
-      filesToRender['_helpers.tpl'] = sources['_helpers.tpl']
-      filesToRender[selected] = sources[selected]
+
+      // find all template helper files
+      getAllTplFilenamesFromList(Object.keys(sources)).forEach((filename) => {
+        filesToRender[filename] = sources[filename]
+      })
+
+      // when the selcted source is a template render it,
+      // if not render the previous selected template.
+      if (!extensionIsTpl(ext)) {
+        filesToRender[selected] = sources[selected]
+      } else {
+        filesToRender[prevSelectedTemplate] = sources[prevSelectedTemplate]
+      }
 
       const result = window.helmRender(JSON.stringify(filesToRender), valuesSource, chartSource, getSettingsObject())
       setRenderResult(result)
 
-      let annotation = {}
+      let annotation: Ace.Annotation = { text: '', type: '' }
       let tmpError = { row: -1, text: '' }
       if (result.error) {
         if (result.error.kind !== '') {
@@ -216,26 +231,27 @@ function Playground(): JSX.Element {
 
   useEffect(() => {
     if (wasmLoaded && aceEditor) {
-      // @ts-ignore
-      let customAnnotations = [] // eslint-disable-line
+      let annotations: Ace.Annotation = { text: '', type: '' }
       if (aceEditorError.row !== -1) {
-        customAnnotations = [
-          {
-            row: aceEditorError.row,
-            column: 0,
-            type: 'error',
-            text: aceEditorError.text,
-            custom: true,
-          },
-        ]
+        annotations = {
+          row: aceEditorError.row,
+          column: 0,
+          type: 'error',
+          text: aceEditorError.text,
+        }
       }
-      // @ts-ignore
-      aceEditor?.getSession().setAnnotations(customAnnotations)
+      aceEditor?.getSession().setAnnotations([annotations])
     }
   }, [wasmLoaded, aceEditor, aceEditorError])
 
   const handleSelect = (event: React.ChangeEvent<{}>, nodeIds: string) => { // eslint-disable-line
+    const ext = getFileExtension(nodeIds)
     setSelected(nodeIds)
+
+    if (!extensionIsTpl(ext)) {
+      setPrevSelectedTemplate(nodeIds)
+    }
+
     switch (nodeIds) {
       case chartFilename:
         setEditor(chartSource)
@@ -255,7 +271,6 @@ function Playground(): JSX.Element {
         setEditor('')
         break
       default:
-        // @ts-ignore
         setEditor(sources[nodeIds])
     }
   }
@@ -274,7 +289,6 @@ function Playground(): JSX.Element {
         break
       default:
         const tmp = sources // eslint-disable-line
-        // @ts-ignore
         tmp[selected] = newValue
         setSources(tmp)
     }
@@ -370,7 +384,7 @@ function Playground(): JSX.Element {
                 </Container>
               ) : (
                 <Container maxWidth="xl" disableGutters>
-                  <Grid container spacing={0} style={{height:"calc(100vh - 150px)"}}>
+                  <Grid container spacing={0} style={{ height: 'calc(100vh - 150px)' }}>
                     <Grid item xs={6}>
                       <Typography variant="subtitle1">
                         <input
