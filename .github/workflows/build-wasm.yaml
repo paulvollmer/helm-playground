@@ -33,12 +33,12 @@ jobs:
       - name: Test
         run: make test
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: wasm-build
           path: public/main.wasm
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: wasm-exec
           path: public/wasm_exec.js

@@ -35,7 +35,7 @@ jobs:
       - name: Build
         run: CI=false yarn run build # TODO: remove CI=false when all eslint errors are solved
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: react-build
           path: build
