@@ -4,7 +4,7 @@ test:
 	@ GOOS=js GOARCH=wasm go test -cover -exec="$(shell go env GOROOT)/misc/wasm/go_js_wasm_exec" ./pkg/...
 
 lint-prepare:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.43.0
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.50.1
 lint:
 	@ GOOS=js GOARCH=wasm ./bin/golangci-lint run -c ./.golangci.yaml ./pkg/...
 lint-fix:
