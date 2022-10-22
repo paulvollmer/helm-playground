@@ -115,7 +115,7 @@ func ReturnObjectErrorRender(err error) map[string]interface{} {
 	}
 }
 
-func parseRenderError(renderErr error) (file string, line int, message string) {
+func parseRenderError(renderErr error) (file string, line int, message string) { //nolint: nonamedreturns
 	r := regexp.MustCompile(`parse error at \((.+):(\d+)\): (.+)`)
 
 	res := r.FindAllStringSubmatch(renderErr.Error(), -1)
