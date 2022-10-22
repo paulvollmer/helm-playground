@@ -1,105 +1,11 @@
 name: CI
 
 on:
-  push:
   pull_request:
 
 jobs:
   build-wasm:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
-
-      - name: Get dependencies
-        run: GOOS=js GOARCH=wasm go get ./...
-
-      - name: Prebuild
-        run: make prebuild
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v3.1.0
-        with:
-          version: v1.43
-
-      - name: Build
-        run: make build
-
-      - name: Test
-        run: make test
-      
-      - uses: actions/upload-artifact@v2
-        with:
-          name: wasm-build
-          path: public/main.wasm
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: wasm-exec
-          path: public/wasm_exec.js
+    uses: paulvollmer/helm-playground/.github/workflows/build-wasm.yaml@main
 
   build-app:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-      
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            **/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Lint
-        run: yarn run lint
-
-      - name: Run the tests
-        run: yarn run test
-
-      - name: Build
-        run: CI=false yarn run build # TODO: remove CI=false when all eslint errors are solved
-      
-      - uses: actions/upload-artifact@v2
-        with:
-          name: react-build
-          path: build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build-wasm, build-app]
-    if: success() && github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: react-build
-          path: build
-      
-      - uses: actions/download-artifact@v2
-        with:
-          name: wasm-build
-          path: build
-      
-      - uses: actions/download-artifact@v2
-        with:
-          name: wasm-exec
-          path: build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+    uses: paulvollmer/helm-playground/.github/workflows/build-app.yaml@main
