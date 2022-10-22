@@ -4,21 +4,20 @@ run:
     - wasm
 
 linters:
+  enable-all: true
   disable:
     - gci
-  presets:
-    - bugs
-    - comment
-    - complexity
-    - error
-    - format
-    - import
-    - metalinter
-    - module
-    - performance
-    - style
-    - test
-    - unused
+    # deprecated linter
+    - deadcode
+    - exhaustivestruct
+    - golint
+    - ifshort
+    - interfacer
+    - maligned
+    - nosnakecase
+    - scopelint
+    - structcheck
+    - varcheck
 
 linters-settings:
   goimports:
