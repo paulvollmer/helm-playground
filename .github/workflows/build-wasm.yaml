@@ -1,0 +1,44 @@
+name: Build WASM
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Get dependencies
+        run: GOOS=js GOARCH=wasm go get ./...
+
+      - name: Prebuild
+        run: make prebuild
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v3.1.0
+        with:
+          version: v1.43
+
+      - name: Build
+        run: make build
+
+      - name: Test
+        run: make test
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wasm-build
+          path: public/main.wasm
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wasm-exec
+          path: public/wasm_exec.js

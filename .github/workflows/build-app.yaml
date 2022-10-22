@@ -1,0 +1,41 @@
+name: Build App
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  build-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn run lint
+
+      - name: Run the tests
+        run: yarn run test
+
+      - name: Build
+        run: CI=false yarn run build # TODO: remove CI=false when all eslint errors are solved
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: react-build
+          path: build
