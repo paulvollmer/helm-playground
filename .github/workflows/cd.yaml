@@ -30,17 +30,17 @@ jobs:
     needs: [build-wasm, build-app]
     if: success() && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: react-build
           path: build
       
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: wasm-build
           path: build
       
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: wasm-exec
           path: build
