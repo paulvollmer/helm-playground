@@ -3,7 +3,7 @@ module github.com/paulvollmer/helm-playground
 go 1.18
 
 require (
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.2
 	gopkg.in/yaml.v2 v2.4.0
 	helm.sh/helm/v3 v3.7.2
 )
